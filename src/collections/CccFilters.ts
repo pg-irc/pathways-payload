@@ -17,11 +17,13 @@ const CccFilters: CollectionConfig = {
       name: "name",
       type: "text",
       localized: true,
+      label: "Filter name",
     },
     {
       name: "description",
       type: "text",
       localized: true,
+      label: "Filter description",
     },
     {
       name: "icon",
@@ -31,6 +33,7 @@ const CccFilters: CollectionConfig = {
     {
       name: "displayOrder",
       type: "number",
+      label: "Filter display order",
     },
     {
       name: "fields",
@@ -40,15 +43,21 @@ const CccFilters: CollectionConfig = {
           name: "name",
           type: "text",
           localized: true,
+          label: "Field name",
         },
         {
-          name: 'unit',
-          type: 'text',
+          name: "unit",
+          type: "select",
+          options: ["percent", "dollars", "centigrade"],
+          required: false,
+          hasMany: false,
+          label: "Unit of measurement",
         },
         {
-          name: 'displayOrder',
-          type: 'number',
-        }
+          name: "displayOrder",
+          type: "number",
+          label: "Field display order",
+        },
       ],
     },
   ],
