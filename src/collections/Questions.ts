@@ -16,6 +16,7 @@ const Questions: CollectionConfig = {
     {
       name: "questionText",
       type: "text",
+      localized: true,
     },
     {
       name: "displayOrder",
@@ -37,6 +38,7 @@ const Questions: CollectionConfig = {
         {
           name: "answerText",
           type: "text",
+          localized: true,
         },
         {
           name: "displayOrder",

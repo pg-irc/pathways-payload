@@ -5,19 +5,20 @@ import Users from './collections/Users';
 import Provinces from './collections/Provinces';
 
 export default buildConfig({
-  serverURL: 'http://localhost:3000',
+  serverURL: "http://localhost:3000",
   admin: {
     user: Users.slug,
   },
-  collections: [
-    Questions,
-    Provinces,
-    Users,
-  ],
+  collections: [Questions, Provinces, Users],
+  localization: {
+    locales: ["en", "es", "de"],
+    defaultLocale: "en",
+    fallback: true,
+  },
   typescript: {
-    outputFile: path.resolve(__dirname, 'payload-types.ts')
+    outputFile: path.resolve(__dirname, "payload-types.ts"),
   },
   graphQL: {
-    schemaOutputFile: path.resolve(__dirname, 'generated-schema.graphql'),
+    schemaOutputFile: path.resolve(__dirname, "generated-schema.graphql"),
   },
 });
