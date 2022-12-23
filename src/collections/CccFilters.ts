@@ -74,6 +74,13 @@ const CccFilters: CollectionConfig = {
               name: "numberValue",
               type: "number",
             },
+            {
+              name: 'city',
+              type: 'relationship',
+              relationTo: 'cities',
+              hasMany: false,
+              label: 'the label',
+            },
           ],
         },
       ],
