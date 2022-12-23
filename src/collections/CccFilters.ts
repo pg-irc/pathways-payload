@@ -1,10 +1,10 @@
 import { CollectionConfig } from 'payload/types';
 
 const CccFilters: CollectionConfig = {
-  slug: 'ccc-filters',
+  slug: "ccc-filters",
   admin: {
-    defaultColumns: ['name', 'updatedAt'],
-    useAsTitle: 'name',
+    defaultColumns: ["name", "displayOrder", "updatedAt"],
+    useAsTitle: "name",
   },
   access: {
     create: () => true,
@@ -14,11 +14,25 @@ const CccFilters: CollectionConfig = {
   },
   fields: [
     {
-      name: 'name',
-      type: 'text',
+      name: "name",
+      type: "text",
       localized: true,
     },
+    {
+      name: "description",
+      type: "text",
+      localized: true,
+    },
+    {
+      name: "icon",
+      type: "text",
+      label: "Icon: Enter a fontAwesome5 icon name",
+    },
+    {
+      name: "displayOrder",
+      type: "number",
+    },
   ],
-}
+};
 
 export default CccFilters;
