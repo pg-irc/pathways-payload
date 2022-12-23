@@ -41,10 +41,6 @@ const Questions: CollectionConfig = {
           localized: true,
         },
         {
-          name: "displayOrder",
-          type: "number",
-        },
-        {
           name: "provinces",
           type: "relationship",
           relationTo: "provinces",

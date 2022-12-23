@@ -28,7 +28,7 @@ const CccFilters: CollectionConfig = {
     {
       name: "icon",
       type: "text",
-      label: "Icon: Enter a fontAwesome5 icon name",
+      label: "Filter icon, use fontawesome 5 icon names",
     },
     {
       name: "displayOrder",
@@ -52,11 +52,6 @@ const CccFilters: CollectionConfig = {
           required: false,
           hasMany: false,
           label: "Unit of measurement",
-        },
-        {
-          name: "displayOrder",
-          type: "number",
-          label: "Field display order",
         },
       ],
     },
