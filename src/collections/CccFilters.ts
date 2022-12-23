@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types';
+import { CollectionConfig } from "payload/types";
 
 const CccFilters: CollectionConfig = {
   slug: "ccc-filters",
@@ -28,7 +28,7 @@ const CccFilters: CollectionConfig = {
     {
       name: "icon",
       type: "text",
-      label: "Filter icon, use fontawesome 5 icon names",
+      label: "Font Awesome 5 icon name",
     },
     {
       name: "displayOrder",
@@ -54,6 +54,12 @@ const CccFilters: CollectionConfig = {
           label: "Unit of measurement",
         },
       ],
+      admin: {
+        components: {
+          RowLabel: ({ data, index }) =>
+            data?.name || `Field ${String(index).padStart(2, "0")}`,
+        },
+      },
     },
   ],
 };

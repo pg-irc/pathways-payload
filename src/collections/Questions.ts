@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types';
+import { CollectionConfig } from "payload/types";
 
 const Questions: CollectionConfig = {
   slug: "questions",
@@ -50,6 +50,12 @@ const Questions: CollectionConfig = {
           unique: false,
         },
       ],
+      admin: {
+        components: {
+          RowLabel: ({ data, index }) =>
+            data?.answerText || `Answer ${String(index).padStart(2, "0")}`,
+        },
+      },
     },
   ],
 };
