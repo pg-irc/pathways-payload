@@ -46,12 +46,35 @@ const CccFilters: CollectionConfig = {
           label: "Field name",
         },
         {
+          name: 'type',
+          type: 'radio',
+          options: [
+            { label: 'text', value:'text'},
+            { label: 'number', value:'number'}
+          ]
+        },
+        {
           name: "unit",
           type: "select",
           options: ["percent", "dollars", "centigrade"],
           required: false,
           hasMany: false,
           label: "Unit of measurement",
+        },
+        {
+          name: "values",
+          type: "array",
+          fields: [
+            {
+              name: "textValue",
+              type: "text",
+              localized: true,
+            },
+            {
+              name: "numberValue",
+              type: "number",
+            },
+          ],
         },
       ],
       admin: {
