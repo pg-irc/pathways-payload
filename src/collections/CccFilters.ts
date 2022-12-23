@@ -32,6 +32,25 @@ const CccFilters: CollectionConfig = {
       name: "displayOrder",
       type: "number",
     },
+    {
+      name: "fields",
+      type: "array",
+      fields: [
+        {
+          name: "name",
+          type: "text",
+          localized: true,
+        },
+        {
+          name: 'unit',
+          type: 'text',
+        },
+        {
+          name: 'displayOrder',
+          type: 'number',
+        }
+      ],
+    },
   ],
 };
 
