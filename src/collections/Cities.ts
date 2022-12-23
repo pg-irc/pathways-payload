@@ -1,9 +1,9 @@
 import { CollectionConfig } from 'payload/types';
 
-const Provinces: CollectionConfig = {
-  slug: 'provinces',
+const Cities: CollectionConfig = {
+  slug: 'cities',
   admin: {
-    defaultColumns: ['name', 'shortName', 'updatedAt'],
+    defaultColumns: ['name', 'updatedAt'],
     useAsTitle: 'name',
   },
   access: {
@@ -18,11 +18,7 @@ const Provinces: CollectionConfig = {
       type: 'text',
       localized: true,
     },
-    {
-      name: 'shortName',
-      type: 'text'
-    }
   ],
 }
 
-export default Provinces;
+export default Cities;
