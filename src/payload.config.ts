@@ -1,7 +1,8 @@
 import { buildConfig } from 'payload/config';
 import path from 'path';
-import Questions from './collections/TodoLists';
+import Questions from './collections/Questions';
 import Users from './collections/Users';
+import Provinces from './collections/Provinces';
 
 export default buildConfig({
   serverURL: 'http://localhost:3000',
@@ -10,6 +11,7 @@ export default buildConfig({
   },
   collections: [
     Questions,
+    Provinces,
     Users,
   ],
   typescript: {
