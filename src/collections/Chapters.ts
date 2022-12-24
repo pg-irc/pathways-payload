@@ -17,6 +17,7 @@ const Chapters: CollectionConfig = {
       name: 'name',
       type: 'text',
       localized: true,
+      unique: true,
     },
     {
       name: 'displayOrder',

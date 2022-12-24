@@ -16,6 +16,7 @@ const Tags: CollectionConfig = {
     {
       name: "name",
       type: "text",
+      unique: true,
     },
   ],
   timestamps: false,
