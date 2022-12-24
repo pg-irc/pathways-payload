@@ -3,7 +3,7 @@ import { CollectionConfig } from 'payload/types';
 const Tags: CollectionConfig = {
   slug: "tags",
   admin: {
-    defaultColumns: ["name", "updatedAt"],
+    defaultColumns: ["name"],
     useAsTitle: "name",
   },
   access: {
