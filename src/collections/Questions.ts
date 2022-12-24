@@ -49,6 +49,13 @@ const Questions: CollectionConfig = {
             "The provinces this answer is shown in, leave empty to show in all provinces",
           unique: false,
         },
+        {
+          name: 'recommendTags',
+          type: 'relationship',
+          relationTo: 'tags',
+          hasMany: true,
+          label: 'Recommend topics with these tags'
+        }
       ],
       admin: {
         components: {
