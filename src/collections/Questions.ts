@@ -29,7 +29,6 @@ const Questions: CollectionConfig = {
       hasMany: true,
       label:
         "The provinces this question is shown in, leave empty to show in all provinces",
-      unique: false,
     },
     {
       name: "answers",
@@ -47,7 +46,6 @@ const Questions: CollectionConfig = {
           hasMany: true,
           label:
             "The provinces this answer is shown in, leave empty to show in all provinces",
-          unique: false,
         },
         {
           name: 'recommendTags',

@@ -17,12 +17,11 @@ const Provinces: CollectionConfig = {
       name: 'name',
       type: 'text',
       localized: true,
-      unique: true,
     },
     {
       name: 'shortName',
       type: 'text',
-      label: 'Two letter province name',
+      label: 'Abbreviated name',
       unique: true,
     }
   ],
