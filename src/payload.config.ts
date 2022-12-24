@@ -5,13 +5,14 @@ import Users from './collections/Users';
 import Provinces from './collections/Provinces';
 import Cities from './collections/Cities';
 import CccFilters from './collections/CccFilters';
+import Tags from './collections/Tags';
 
 export default buildConfig({
   serverURL: "http://localhost:3000",
   admin: {
     user: Users.slug,
   },
-  collections: [Questions, Provinces, Cities, CccFilters, Users],
+  collections: [Questions, Provinces, Cities, CccFilters, Tags, Users],
   localization: {
     locales: ["en", "es", "de"],
     defaultLocale: "en",
