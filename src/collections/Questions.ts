@@ -98,8 +98,8 @@ const getQuestionsForProvince = async (req, id) => {
     collection: "questions",
     where: {
       provinces: {
-        equals: []
-      }
+        in: "63a9d4d84977177c6ba6541e",
+      },
     },
   });
   return found;
