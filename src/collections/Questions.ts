@@ -48,12 +48,12 @@ const Questions: CollectionConfig = {
             "The provinces this answer is shown in, leave empty to show in all provinces",
         },
         {
-          name: 'recommendTags',
-          type: 'relationship',
-          relationTo: 'tags',
+          name: "recommendTags",
+          type: "relationship",
+          relationTo: "tags",
           hasMany: true,
-          label: 'Recommend topics with these tags'
-        }
+          label: "Recommend topics with these tags",
+        },
       ],
       admin: {
         components: {
@@ -63,6 +63,23 @@ const Questions: CollectionConfig = {
       },
     },
   ],
+  endpoints: [
+    {
+      // access with http://localhost:3000/api/questions/63a9cfacd67cca73016df380/tracking
+      path: "/:id/tracking",
+      method: "get",
+      handler: async (req, res, _next) => {
+        const tracking = await getTrackingInfo(req.params.id);
+        if (tracking) {
+          res.status(200).send({ tracking });
+        } else {
+          res.status(404).send({ error: "not found" });
+        }
+      },
+    },
+  ],
 };
+
+const getTrackingInfo = (id) => ({ a: "a", b: "b" });
 
 export default Questions;
