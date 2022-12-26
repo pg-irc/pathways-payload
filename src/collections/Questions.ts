@@ -80,19 +80,8 @@ const Questions: CollectionConfig = {
   ],
 };
 
-// return questions where provinces is either empty, or contain the given province
-//
-// Mongo queries
-//
-// { provinces: []}
-// { provinces: '63a9d4bd4977177c6ba65405'}
-// { $or: [{provinces: []}, { provinces: '63a9d4bd4977177c6ba65405'}]}
-//
-// Payload queries
-//
-// 
-
-const getQuestionsForProvince = async (req, id) => { 
+const getQuestionsForProvince = async (req, provinceId) => { 
+  console.log(`Province id: ${provinceId}`);
   const cms = req.payload;
   const found = await cms.find({
     collection: "questions",
@@ -105,7 +94,7 @@ const getQuestionsForProvince = async (req, id) => {
         },
         {
           provinces: {
-            in: "63a9d4d84977177c6ba6541e",
+            in: provinceId,
           },
         },
       ],
