@@ -97,9 +97,18 @@ const getQuestionsForProvince = async (req, id) => {
   const found = await cms.find({
     collection: "questions",
     where: {
-      provinces: {
-        in: "63a9d4d84977177c6ba6541e",
-      },
+      or: [
+        {
+          provinces: {
+            equals: [],
+          }
+        },
+        {
+          provinces: {
+            in: "63a9d4d84977177c6ba6541e",
+          },
+        },
+      ],
     },
   });
   return found;
