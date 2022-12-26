@@ -65,13 +65,13 @@ const Questions: CollectionConfig = {
   ],
   endpoints: [
     {
-      // access with http://localhost:3000/api/questions/63a9cfacd67cca73016df380/tracking
-      path: "/:id/tracking",
+      // access with http://localhost:3000/api/questions/BC/tracking
+      path: "/:province/tracking",
       method: "get",
       handler: async (req, res, _next) => {
-        const tracking = await getTrackingInfo(req.params.id);
-        if (tracking) {
-          res.status(200).send({ tracking });
+        const questions = await getQuestionsForProvince(req, req.params.province);
+        if (questions) {
+          res.status(200).send({ tracking: questions });
         } else {
           res.status(404).send({ error: "not found" });
         }
@@ -80,6 +80,29 @@ const Questions: CollectionConfig = {
   ],
 };
 
-const getTrackingInfo = (id) => ({ a: "a", b: "b" });
+// return questions where provinces is either empty, or contain the given province
+//
+// Mongo queries
+//
+// { provinces: []}
+// { provinces: '63a9d4bd4977177c6ba65405'}
+// { $or: [{provinces: []}, { provinces: '63a9d4bd4977177c6ba65405'}]}
+//
+// Payload queries
+//
+// 
+
+const getQuestionsForProvince = async (req, id) => { 
+  const cms = req.payload;
+  const found = await cms.find({
+    collection: "questions",
+    where: {
+      provinces: {
+        equals: []
+      }
+    },
+  });
+  return found;
+};
 
 export default Questions;
