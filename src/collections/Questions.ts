@@ -65,13 +65,13 @@ const Questions: CollectionConfig = {
   ],
   endpoints: [
     {
-      // access with http://localhost:3000/api/questions/BC/tracking
-      path: "/:province/tracking",
+      // access with http://localhost:3000/api/questions/for-province/63a9d4d84977177c6ba6541e
+      path: "/for-province/:province",
       method: "get",
       handler: async (req, res, _next) => {
         const questions = await getQuestionsForProvince(req, req.params.province);
         if (questions) {
-          res.status(200).send({ tracking: questions });
+          res.status(200).send({ questions });
         } else {
           res.status(404).send({ error: "not found" });
         }
@@ -80,25 +80,19 @@ const Questions: CollectionConfig = {
   ],
 };
 
+const provincesIsEmpty = () => ({ provinces: { equals: [] } });
+
+const provincesContainsId = (id) => ({ provinces: { in: id } }); 
+
+const appliesToProvince = (id) => ({
+  or: [provincesIsEmpty(), provincesContainsId(id)],
+});
+
 const getQuestionsForProvince = async (req, provinceId) => { 
-  console.log(`Province id: ${provinceId}`);
   const cms = req.payload;
   const found = await cms.find({
     collection: "questions",
-    where: {
-      or: [
-        {
-          provinces: {
-            equals: [],
-          }
-        },
-        {
-          provinces: {
-            in: provinceId,
-          },
-        },
-      ],
-    },
+    where: appliesToProvince(provinceId),
   });
   return found;
 };

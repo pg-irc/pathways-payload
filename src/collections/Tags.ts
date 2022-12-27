@@ -12,6 +12,7 @@ const Tags: CollectionConfig = {
     update: () => true,
     delete: () => true,
   },
+  // TODO make this the id?
   fields: [
     {
       name: "name",
