@@ -3,7 +3,7 @@ import { CollectionConfig } from 'payload/types';
 const GroupMetaData: CollectionConfig = {
   slug: "group-meta-data",
   admin: {
-    defaultColumns: ["name"],
+    defaultColumns: ["name", "values", "description"],
     useAsTitle: "name",
   },
   access: {
@@ -13,16 +13,17 @@ const GroupMetaData: CollectionConfig = {
     delete: () => true,
   },
   fields: [
+    { name: "name", type: "text", unique: true },
+    { name: "description", type: "text", localized: true },
     {
-      name: "name",
-      type: "text",
-      unique: true,
+      name: "values",
+      type: "array",
+      fields: [
+        { name: "name", type: "text" },
+        { name: "description", type: "text" },
+        { name: "unit", type: "text" }, // TODO make this a select
+      ],
     },
-    {
-      name: 'description',
-      type: 'text',
-      localized: true
-    }
   ],
   timestamps: false,
 };

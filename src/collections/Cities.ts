@@ -27,7 +27,7 @@ const Cities: CollectionConfig = {
       required: true,
     },
     {
-      name: 'ccc-data',
+      name: 'comparable-data',
       type: 'group',
       fields: [
         {
@@ -41,14 +41,8 @@ const Cities: CollectionConfig = {
               hasMany: false,
               // hook will assign this to the "climate" group metadata document
             },
-            {
-              name: 'summer-high',
-              type: 'number',
-            },
-            {
-              name: 'summer-low',
-              type: 'number',
-            }
+            { name: 'summer-high', type: 'number' },
+            { name: 'summer-low', type: 'number' }
           ]
         },
         {
@@ -62,14 +56,8 @@ const Cities: CollectionConfig = {
               hasMany: false,
               // hook will assign this to the "people" group metadata document
             },
-            {
-              name: 'population',
-              type: 'number',
-            },
-            {
-              name: 'english-speakers-percent',
-              type: 'number',
-            }
+            { name: 'population', type: 'number' },
+            { name: 'english-speakers-percent', type: 'number' }
           ]
         }
       ]
