@@ -7,13 +7,14 @@ import Cities from './collections/Cities';
 import Tags from './collections/Tags';
 import Chapters from './collections/Chapters';
 import Topics from './collections/Topics';
+import GroupMetaData from './collections/GroupMetaData';
 
 export default buildConfig({
   serverURL: "http://localhost:3000",
   admin: {
     user: Users.slug,
   },
-  collections: [Questions, Provinces, Cities, Chapters, Topics, Tags, Users],
+  collections: [Questions, Provinces, Cities, GroupMetaData, Chapters, Topics, Tags, Users],
   localization: {
     locales: ["en", "es", "de"],
     defaultLocale: "en",

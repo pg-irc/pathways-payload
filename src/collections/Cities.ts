@@ -32,13 +32,18 @@ const Cities: CollectionConfig = {
       fields: [
         {
           name: 'climate',
-          // add a link to a particlular hard-coded document for climate?
           type: 'group',
           fields: [
             {
+              name: 'meta-data',
+              type: 'relationship',
+              relationTo: 'group-meta-data',
+              hasMany: false,
+              // hook will assign this to the "climate" group metadata document
+            },
+            {
               name: 'summer-high',
               type: 'number',
-              // add a link to a particular hard-coded document for summer high?
             },
             {
               name: 'summer-low',
@@ -50,6 +55,13 @@ const Cities: CollectionConfig = {
           name: 'people',
           type: 'group',
           fields: [
+            {
+              name: 'meta-data',
+              type: 'relationship',
+              relationTo: 'group-meta-data',
+              hasMany: false,
+              // hook will assign this to the "people" group metadata document
+            },
             {
               name: 'population',
               type: 'number',

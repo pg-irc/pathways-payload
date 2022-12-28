@@ -1,7 +1,7 @@
 import { CollectionConfig } from 'payload/types';
 
-const Tags: CollectionConfig = {
-  slug: "tags",
+const GroupMetaData: CollectionConfig = {
+  slug: "group-meta-data",
   admin: {
     defaultColumns: ["name"],
     useAsTitle: "name",
@@ -18,8 +18,13 @@ const Tags: CollectionConfig = {
       type: "text",
       unique: true,
     },
+    {
+      name: 'description',
+      type: 'text',
+      localized: true
+    }
   ],
   timestamps: false,
 };
 
-export default Tags;
+export default GroupMetaData;
