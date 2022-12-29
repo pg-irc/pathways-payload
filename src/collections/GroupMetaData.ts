@@ -3,8 +3,8 @@ import { CollectionConfig } from 'payload/types';
 const GroupMetaData: CollectionConfig = {
   slug: "group-meta-data",
   admin: {
-    defaultColumns: ["name", "description"],
-    useAsTitle: "name",
+    defaultColumns: ["id", "fields", "description"],
+    useAsTitle: "id",
   },
   access: {
     create: () => true,
@@ -24,12 +24,18 @@ const GroupMetaData: CollectionConfig = {
         {
           name: "unit",
           type: "select",
-          options: ["persons", "percent", "dollars", "centigrade"],
+          options: ["persons", "percent", "dollars", "centigrade", "localized text"],
           required: true,
           hasMany: false,
           label: "Unit of measurement",
         },
       ],
+      admin: {
+        components: {
+          RowLabel: ({ data, index }) =>
+            data?.name || `Field Meta Data ${String(index).padStart(2,"0")}`,
+        }
+      }
     },
   ],
 };

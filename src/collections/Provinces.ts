@@ -3,8 +3,8 @@ import { CollectionConfig } from 'payload/types';
 const Provinces: CollectionConfig = {
   slug: 'provinces',
   admin: {
-    defaultColumns: ['name', 'shortName', 'updatedAt'],
-    useAsTitle: 'name',
+    defaultColumns: ['id', 'name'],
+    useAsTitle: 'id',
   },
   access: {
     create: () => true,
