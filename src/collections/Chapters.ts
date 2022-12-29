@@ -13,15 +13,8 @@ const Chapters: CollectionConfig = {
         delete: () => true,
     },
     fields: [
-        {
-            name: 'name',
-            type: 'text',
-            localized: true,
-        },
-        {
-            name: 'displayOrder',
-            type: 'number',
-        },
+        { name: 'name', type: 'text', localized: true },
+        { name: 'displayOrder', type: 'number' },
     ],
     timestamps: false,
 };

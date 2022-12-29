@@ -3,8 +3,8 @@ import { CollectionConfig } from 'payload/types';
 const Tags: CollectionConfig = {
     slug: 'tags',
     admin: {
-        defaultColumns: ['name'],
-        useAsTitle: 'name',
+        defaultColumns: ['id'],
+        useAsTitle: 'id',
     },
     access: {
         create: () => true,
@@ -12,13 +12,7 @@ const Tags: CollectionConfig = {
         update: () => true,
         delete: () => true,
     },
-    fields: [
-        {
-            name: 'name',
-            type: 'text',
-            unique: true,
-        },
-    ],
+    fields: [{ name: 'id', type: 'text', unique: true }],
     timestamps: false,
 };
 
