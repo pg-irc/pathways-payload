@@ -1,10 +1,11 @@
 import { CollectionConfig, FieldHook } from 'payload/types';
 
-const setMetadataReference: FieldHook = async ({ value, data }) => {
-  // TODO look up the correct metadata document id
-  console.log(JSON.stringify(data));
-  return "63ac73a26115f74796575e5e"; // people id
-}
+const assignMetadata = (groupId) => {
+  const getMetadataReference: FieldHook = async ({ value, data }) => {
+    return groupId;
+  };
+  return getMetadataReference;
+};
 
 const Cities: CollectionConfig = {
   slug: "cities",
@@ -45,7 +46,7 @@ const Cities: CollectionConfig = {
               type: "relationship",
               relationTo: "group-meta-data",
               hasMany: false,
-              hooks: { beforeChange: [setMetadataReference] },
+              hooks: { beforeChange: [assignMetadata("climate")] },
             },
             { name: "summer-high", type: "number" },
             { name: "summer-low", type: "number" },
@@ -60,7 +61,7 @@ const Cities: CollectionConfig = {
               type: "relationship",
               relationTo: "group-meta-data",
               hasMany: false,
-              hooks: { beforeChange: [setMetadataReference] },
+              hooks: { beforeChange: [assignMetadata("people")] },
             },
             { name: "population", type: "number" },
             { name: "english-speakers-percent", type: "number" },

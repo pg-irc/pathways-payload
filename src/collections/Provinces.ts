@@ -12,19 +12,9 @@ const Provinces: CollectionConfig = {
     update: () => true,
     delete: () => true,
   },
-  // TODO add id field to hold short name, and remove the short name
   fields: [
-    {
-      name: 'name',
-      type: 'text',
-      localized: true,
-    },
-    {
-      name: 'shortName',
-      type: 'text',
-      label: 'Abbreviated name',
-      unique: true,
-    }
+    { name: 'id', type: 'text', label: 'Abbreviated name', unique: true, },
+    { name: 'name', type: 'text', localized: true, },
   ],
 }
 

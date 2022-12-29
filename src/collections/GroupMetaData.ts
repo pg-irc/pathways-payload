@@ -13,7 +13,7 @@ const GroupMetaData: CollectionConfig = {
     delete: () => true,
   },
   fields: [
-    { name: "name", type: "text", unique: true, localized: false },
+    { name: "id", type: "text", unique: true, localized: false },
     { name: "description", type: "text", localized: true },
     {
       name: "field-meta-data",
@@ -22,13 +22,13 @@ const GroupMetaData: CollectionConfig = {
         { name: "name", type: "text", localized: false },
         { name: "description", type: "text", localized: true },
         {
-          name: 'unit',
-          type: 'select',
-          options: ['persons', 'percent', 'dollars', 'centigrade'],
-          required: true, 
+          name: "unit",
+          type: "select",
+          options: ["persons", "percent", "dollars", "centigrade"],
+          required: true,
           hasMany: false,
-          label: 'Unit of measurement'
-        }
+          label: "Unit of measurement",
+        },
       ],
     },
   ],
