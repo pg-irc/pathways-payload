@@ -1,3 +1,9 @@
+import { FieldHook } from 'payload/types';
+
+const setMetaDataReference = (metaDataId: string): FieldHook => {
+  return async () => metaDataId;
+};
+
 interface Field {
     name: string;
     type: string;
@@ -31,6 +37,7 @@ class FooDataBuilder {
                         type: 'relationship',
                         relationTo: 'group-meta-data',
                         hasMany: false,
+                        hooks: { beforeChange: [setMetaDataReference(name)] },
                         admin: { hidden: true },
                     },
                 ],
@@ -95,7 +102,7 @@ describe('Comparable data builder', () => {
             expect(result[0].fields[1].type).toEqual('string');
             expect(result[0].fields[1].localized).toEqual(true);
         });
-        it('creates a numeric field with unit', () => {
+        it('creates a numeric field', () => {
             const result = new FooDataBuilder()
                 .withGroup('climate')
                 .withNumericField('temperature', 'centigrade')
