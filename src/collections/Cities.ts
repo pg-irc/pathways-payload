@@ -1,10 +1,8 @@
 import { CollectionConfig, FieldHook } from 'payload/types';
 
-const assignMetadata = (groupId) => {
-  const getMetadataReference: FieldHook = async ({ value, data }) => {
-    return groupId;
-  };
-  return getMetadataReference;
+const setMetaDataReference = (metaDataId) => {
+  const hook: FieldHook = async ({ value, data }) => metaDataId;
+  return hook;
 };
 
 const Cities: CollectionConfig = {
@@ -47,7 +45,7 @@ const Cities: CollectionConfig = {
                             relationTo: 'group-meta-data',
                             hasMany: false,
                             hooks: {
-                                beforeChange: [assignMetadata('climate')],
+                                beforeChange: [setMetaDataReference('climate')],
                             },
                             admin: { hidden: true },
                         },
@@ -64,7 +62,7 @@ const Cities: CollectionConfig = {
                             type: 'relationship',
                             relationTo: 'group-meta-data',
                             hasMany: false,
-                            hooks: { beforeChange: [assignMetadata('people')] },
+                            hooks: { beforeChange: [setMetaDataReference('people')] },
                             admin: { hidden: true },
                         },
                         { name: 'population', type: 'number' },
