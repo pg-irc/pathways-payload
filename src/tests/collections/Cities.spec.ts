@@ -5,6 +5,7 @@ interface Field {
     hasMany?: boolean;
     hooks?: any;
     admin?: any;
+    localized?: boolean;
 }
 
 interface Group {
@@ -39,14 +40,14 @@ class FooDataBuilder {
         return this;
     }
     withTextField(name): FooDataBuilder {
-        const lastGroup = this.data[this.data.length - 1];
-        const fields = lastGroup.fields;
-        const updatedFields = [
-            ...fields,
-            { name, type: 'string', localized: true },
-        ];
-        const unpdatedGroup = { ...lastGroup, fields: updatedFields };
-        this.data[this.data.length - 1] = unpdatedGroup;
+        const last = this.data[this.data.length - 1];
+        this.data[this.data.length - 1] = {
+            ...last,
+            fields: [
+                ...last.fields,
+                { name, type: 'string', localized: true },
+            ],
+        };
         return this;
     }
     buildFields(): Object {
