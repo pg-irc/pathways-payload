@@ -1,8 +1,8 @@
 import { FieldHook } from 'payload/types';
 
-const setMetaDataReference = (metaDataId: string): FieldHook => {
-  return async () => metaDataId;
-};
+const setMetaDataReference = (metaDataId: string): FieldHook => (
+  async () => metaDataId
+);
 
 interface Field {
     name: string;
