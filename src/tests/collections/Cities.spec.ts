@@ -16,7 +16,6 @@ interface Group {
 
 class FooDataBuilder {
     data: Group[];
-    
     constructor() {        
         this.data = [];
     }
@@ -39,7 +38,7 @@ class FooDataBuilder {
         ];
         return this;
     }
-    withTextField(name): FooDataBuilder {
+    withTextField(name: string): FooDataBuilder {
         const last = this.data[this.data.length - 1];
         this.data[this.data.length - 1] = {
             ...last,
@@ -47,6 +46,14 @@ class FooDataBuilder {
                 ...last.fields,
                 { name, type: 'string', localized: true },
             ],
+        };
+        return this;
+    }
+    withNumericField(name: string, _unit: string): FooDataBuilder {
+        const last = this.data[this.data.length - 1];
+        this.data[this.data.length - 1] = {
+            ...last,
+            fields: [...last.fields, { name, type: 'number' }],
         };
         return this;
     }
@@ -79,7 +86,7 @@ describe('Comparable data builder', () => {
         });
     });
     describe ('building fields', () => {
-        it('creates a field', () => {
+        it('creates a localized text field', () => {
             const result = new FooDataBuilder()
                 .withGroup('climate')
                 .withTextField('jobs')
@@ -87,6 +94,14 @@ describe('Comparable data builder', () => {
             expect(result[0].fields[1].name).toEqual('jobs');
             expect(result[0].fields[1].type).toEqual('string');
             expect(result[0].fields[1].localized).toEqual(true);
+        });
+        it('creates a numeric field with unit', () => {
+            const result = new FooDataBuilder()
+                .withGroup('climate')
+                .withNumericField('temperature', 'centigrade')
+                .buildFields();
+            expect(result[0].fields[1].name).toEqual('temperature');
+            expect(result[0].fields[1].type).toEqual('number');
         });
     });
 });
