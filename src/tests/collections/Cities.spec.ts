@@ -1,0 +1,91 @@
+interface Field {
+    name: string;
+    type: string;
+    relationTo?: string;
+    hasMany?: boolean;
+    hooks?: any;
+    admin?: any;
+}
+
+interface Group {
+    name: string;
+    type: 'group';
+    fields: Field[];
+}
+
+class FooDataBuilder {
+    data: Group[];
+    
+    constructor() {        
+        this.data = [];
+    }
+    withGroup(name): FooDataBuilder {
+        this.data = [
+            ...this.data,
+            {
+                name,
+                type: 'group',
+                fields: [
+                    {
+                        name: 'meta-data',
+                        type: 'relationship',
+                        relationTo: 'group-meta-data',
+                        hasMany: false,
+                        admin: { hidden: true },
+                    },
+                ],
+            },
+        ];
+        return this;
+    }
+    withTextField(name): FooDataBuilder {
+        const lastGroup = this.data[this.data.length - 1];
+        const fields = lastGroup.fields;
+        const updatedFields = [
+            ...fields,
+            { name, type: 'string', localized: true },
+        ];
+        const unpdatedGroup = { ...lastGroup, fields: updatedFields };
+        this.data[this.data.length - 1] = unpdatedGroup;
+        return this;
+    }
+    buildFields(): Object {
+        return this.data;
+    }
+};
+
+describe('Comparable data builder', () => {
+    describe('building a group', () => {
+        let result: object = undefined;
+        beforeEach(() => { 
+            result = new FooDataBuilder().withGroup('climate').buildFields();
+        })
+        it('creates a group with the given name', () => {
+            expect(result[0].name).toEqual('climate');
+            expect(result[0].type).toEqual('group');
+        });
+        it ('creates field for relationship to meta data', () => {
+            expect(result[0].fields[0].name).toEqual('meta-data'); 
+            expect(result[0].fields[0].type).toEqual('relationship'); 
+            expect(result[0].fields[0].relationTo).toEqual('group-meta-data'); 
+            expect(result[0].fields[0].hasMany).toEqual(false); 
+            expect(result[0].fields[0].admin).toEqual({hidden: true}); 
+        });
+        it ('can create two groups', () => {
+            const result = new FooDataBuilder().withGroup('foo').withGroup('bar').buildFields();
+            expect(result[0].name).toEqual('foo');
+            expect(result[1].name).toEqual('bar');
+        });
+    });
+    describe ('building fields', () => {
+        it('creates a field', () => {
+            const result = new FooDataBuilder()
+                .withGroup('climate')
+                .withTextField('jobs')
+                .buildFields();
+            expect(result[0].fields[1].name).toEqual('jobs');
+            expect(result[0].fields[1].type).toEqual('string');
+            expect(result[0].fields[1].localized).toEqual(true);
+        });
+    });
+});
