@@ -1,10 +1,11 @@
 import { FieldHook } from 'payload/types';
 
-const setMetaDataReference = (metaDataId: string): FieldHook => (
-  async () => metaDataId
-);
+const setMetaDataReference = (metaDataId: string): FieldHook => {
+    const hook: FieldHook = async ({ value, data }) => metaDataId;
+    return hook;
+};
 
-interface Field {
+interface CccValue {
     name: string;
     type: string;
     relationTo?: string;
@@ -14,20 +15,20 @@ interface Field {
     localized?: boolean;
 }
 
-interface Group {
+interface CccDataSet {
     name: string;
     type: 'group';
-    fields: Field[];
+    fields: CccValue[];
 }
 
-class FooDataBuilder {
-    data: Group[];
-    constructor() {        
-        this.data = [];
+class CccDatasetBuilder {
+    dataSets: CccDataSet[];
+    constructor() {
+        this.dataSets = [];
     }
-    withGroup(name): FooDataBuilder {
-        this.data = [
-            ...this.data,
+    addDataSet(name: string): CccDatasetBuilder {
+        this.dataSets = [
+            ...this.dataSets,
             {
                 name,
                 type: 'group',
@@ -45,68 +46,95 @@ class FooDataBuilder {
         ];
         return this;
     }
-    withTextField(name: string): FooDataBuilder {
-        const last = this.data[this.data.length - 1];
-        this.data[this.data.length - 1] = {
-            ...last,
+    withTextValue(name: string): CccDatasetBuilder {
+        const lastDataSet = this.dataSets[this.dataSets.length - 1];
+        this.dataSets[this.dataSets.length - 1] = {
+            ...lastDataSet,
             fields: [
-                ...last.fields,
+                ...lastDataSet.fields,
                 { name, type: 'string', localized: true },
             ],
         };
         return this;
     }
-    withNumericField(name: string, _unit: string): FooDataBuilder {
-        const last = this.data[this.data.length - 1];
-        this.data[this.data.length - 1] = {
-            ...last,
-            fields: [...last.fields, { name, type: 'number' }],
+    withNumericValue(name: string, _unit: string): CccDatasetBuilder {
+        const lastDataSet = this.dataSets[this.dataSets.length - 1];
+        this.dataSets[this.dataSets.length - 1] = {
+            ...lastDataSet,
+            fields: [...lastDataSet.fields, { name, type: 'number' }],
         };
         return this;
     }
-    buildFields(): Object {
-        return this.data;
+    buildAllDataSets(): CccDataSet[] {
+        return this.dataSets;
     }
-};
+}
 
-describe('Comparable data builder', () => {
-    describe('building a group', () => {
-        let result: object = undefined;
-        beforeEach(() => { 
-            result = new FooDataBuilder().withGroup('climate').buildFields();
-        })
-        it('creates a group with the given name', () => {
+export const buildCityComparableData = (): any =>
+    new CccDatasetBuilder()
+        .addDataSet('climate')
+        .withNumericValue('summer-low', 'centigrade')
+        .withNumericValue('summer-high', 'centigrade')
+        .withNumericValue('winter-low', 'centigrade')
+        .withNumericValue('winter-high', 'centigrade')
+        .addDataSet('people')
+        .withNumericValue('population', 'people')
+        .withNumericValue('percent-english-speakers', 'percent')
+        .buildAllDataSets();
+
+describe('CCC data set builder', () => {
+    describe('building a data set', () => {
+        let result: CccDataSet[] = undefined;
+        beforeEach(() => {
+            result = new CccDatasetBuilder()
+                .addDataSet('climate')
+                .buildAllDataSets();
+        });
+        it('sets the data set name', () => {
             expect(result[0].name).toEqual('climate');
+        });
+        it('sets the data set type to "group"', () => {
             expect(result[0].type).toEqual('group');
         });
-        it ('creates field for relationship to meta data', () => {
-            expect(result[0].fields[0].name).toEqual('meta-data'); 
-            expect(result[0].fields[0].type).toEqual('relationship'); 
-            expect(result[0].fields[0].relationTo).toEqual('group-meta-data'); 
-            expect(result[0].fields[0].hasMany).toEqual(false); 
-            expect(result[0].fields[0].admin).toEqual({hidden: true}); 
+        it('creates field to hold the relationship to the metadata', () => {
+            expect(result[0].fields[0].name).toEqual('meta-data');
         });
-        it ('can create two groups', () => {
-            const result = new FooDataBuilder().withGroup('foo').withGroup('bar').buildFields();
+        it('sets the field type to "relationship"', () => {
+            expect(result[0].fields[0].type).toEqual('relationship');
+        });
+        it('sets the field relation to', () => {
+            expect(result[0].fields[0].relationTo).toEqual('group-meta-data');
+        });
+        it('sets the field hasMany to false', () => {
+            expect(result[0].fields[0].hasMany).toEqual(false);
+        });
+        it('sets the field hidden to true', () => {
+            expect(result[0].fields[0].admin).toEqual({ hidden: true });
+        });
+        it('can create two groups', () => {
+            const result = new CccDatasetBuilder()
+                .addDataSet('foo')
+                .addDataSet('bar')
+                .buildAllDataSets();
             expect(result[0].name).toEqual('foo');
             expect(result[1].name).toEqual('bar');
         });
     });
-    describe ('building fields', () => {
+    describe('building fields', () => {
         it('creates a localized text field', () => {
-            const result = new FooDataBuilder()
-                .withGroup('climate')
-                .withTextField('jobs')
-                .buildFields();
+            const result = new CccDatasetBuilder()
+                .addDataSet('climate')
+                .withTextValue('jobs')
+                .buildAllDataSets();
             expect(result[0].fields[1].name).toEqual('jobs');
             expect(result[0].fields[1].type).toEqual('string');
             expect(result[0].fields[1].localized).toEqual(true);
         });
         it('creates a numeric field', () => {
-            const result = new FooDataBuilder()
-                .withGroup('climate')
-                .withNumericField('temperature', 'centigrade')
-                .buildFields();
+            const result = new CccDatasetBuilder()
+                .addDataSet('climate')
+                .withNumericValue('temperature', 'centigrade')
+                .buildAllDataSets();
             expect(result[0].fields[1].name).toEqual('temperature');
             expect(result[0].fields[1].type).toEqual('number');
         });
