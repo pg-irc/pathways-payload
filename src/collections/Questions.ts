@@ -48,12 +48,12 @@ const Questions: CollectionConfig = {
             "The provinces this answer is shown in, leave empty to show in all provinces",
         },
         {
-          name: 'recommendTags',
-          type: 'relationship',
-          relationTo: 'tags',
+          name: "recommendTags",
+          type: "relationship",
+          relationTo: "tags",
           hasMany: true,
-          label: 'Recommend topics with these tags'
-        }
+          label: "Recommend topics with these tags",
+        },
       ],
       admin: {
         components: {
@@ -63,6 +63,38 @@ const Questions: CollectionConfig = {
       },
     },
   ],
+  endpoints: [
+    {
+      // access with http://localhost:3000/api/questions/for-province/63a9d4d84977177c6ba6541e
+      path: "/for-province/:province",
+      method: "get",
+      handler: async (req, res, _next) => {
+        const questions = await getQuestionsForProvince(req, req.params.province);
+        if (questions) {
+          res.status(200).send({ questions });
+        } else {
+          res.status(404).send({ error: "not found" });
+        }
+      },
+    },
+  ],
+};
+
+const provincesIsEmpty = () => ({ provinces: { equals: [] } });
+
+const provincesContainsId = (id) => ({ provinces: { in: id } }); 
+
+const appliesToProvince = (id) => ({
+  or: [provincesIsEmpty(), provincesContainsId(id)],
+});
+
+const getQuestionsForProvince = async (req, provinceId) => { 
+  const cms = req.payload;
+  const found = await cms.find({
+    collection: "questions",
+    where: appliesToProvince(provinceId),
+  });
+  return found;
 };
 
 export default Questions;

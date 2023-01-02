@@ -3,8 +3,8 @@ import { CollectionConfig } from 'payload/types';
 const Provinces: CollectionConfig = {
   slug: 'provinces',
   admin: {
-    defaultColumns: ['name', 'shortName', 'updatedAt'],
-    useAsTitle: 'name',
+    defaultColumns: ['id', 'name'],
+    useAsTitle: 'id',
   },
   access: {
     create: () => true,
@@ -13,17 +13,8 @@ const Provinces: CollectionConfig = {
     delete: () => true,
   },
   fields: [
-    {
-      name: 'name',
-      type: 'text',
-      localized: true,
-    },
-    {
-      name: 'shortName',
-      type: 'text',
-      label: 'Abbreviated name',
-      unique: true,
-    }
+    { name: 'id', type: 'text', label: 'Abbreviated name', unique: true, },
+    { name: 'name', type: 'text', localized: true, },
   ],
 }
 
