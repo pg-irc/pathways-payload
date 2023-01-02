@@ -18,6 +18,14 @@ const Cities: CollectionConfig = {
       type: 'text',
       localized: true,
     },
+    {
+      name: 'province',
+      type: 'relationship',
+      relationTo: 'provinces',
+      hasMany: false,
+      label: 'Province',
+      required: true,
+    }
   ],
 }
 
