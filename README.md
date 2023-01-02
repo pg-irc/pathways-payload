@@ -1,4 +1,4 @@
-# pathways-payload-try3
+# pathways-payload
 
 This project was created using create-payload-app using the ts-todo template.
 
