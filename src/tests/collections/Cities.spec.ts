@@ -1,4 +1,10 @@
-import { CccDatasetBuilder, CccDataSet } from "../../helpers/ccc_dataset_builder";
+import { CccDatasetBuilder } from '../../helpers/ccc_dataset_builder';
+import {
+    GroupField,
+    RelationshipField,
+    TextField,
+    NumberField,
+} from 'payload/types';
 
 export const buildCityComparableData = (): any =>
     new CccDatasetBuilder()
@@ -14,7 +20,7 @@ export const buildCityComparableData = (): any =>
 
 describe('CCC data set builder', () => {
     describe('building a data set', () => {
-        let result: CccDataSet[] = undefined;
+        let result: GroupField[] = undefined;
         beforeEach(() => {
             result = new CccDatasetBuilder()
                 .addDataSet('climate')
@@ -27,16 +33,19 @@ describe('CCC data set builder', () => {
             expect(result[0].type).toEqual('group');
         });
         it('creates field to hold the relationship to the metadata', () => {
-            expect(result[0].fields[0].name).toEqual('meta-data');
+            const firstField = result[0].fields[0] as RelationshipField;
+            expect(firstField.name).toEqual('meta-data');
         });
         it('sets the field type to "relationship"', () => {
             expect(result[0].fields[0].type).toEqual('relationship');
         });
         it('sets the field relation to', () => {
-            expect(result[0].fields[0].relationTo).toEqual('group-meta-data');
+            const field = result[0].fields[0] as RelationshipField;
+            expect(field.relationTo).toEqual('group-meta-data');
         });
         it('sets the field hasMany to false', () => {
-            expect(result[0].fields[0].hasMany).toEqual(false);
+            const field = result[0].fields[0] as RelationshipField;
+            expect(field.hasMany).toEqual(false);
         });
         it('sets the field hidden to true', () => {
             expect(result[0].fields[0].admin).toEqual({ hidden: true });
@@ -56,17 +65,19 @@ describe('CCC data set builder', () => {
                 .addDataSet('climate')
                 .withTextValue('jobs')
                 .buildAllDataSets();
-            expect(result[0].fields[1].name).toEqual('jobs');
-            expect(result[0].fields[1].type).toEqual('string');
-            expect(result[0].fields[1].localized).toEqual(true);
+            const secondField = result[0].fields[1] as TextField;
+            expect(secondField.name).toEqual('jobs');
+            expect(result[0].fields[1].type).toEqual('text');
+            expect(secondField.localized).toEqual(true);
         });
         it('creates a numeric field', () => {
             const result = new CccDatasetBuilder()
                 .addDataSet('climate')
                 .withNumericValue('temperature', 'centigrade')
                 .buildAllDataSets();
-            expect(result[0].fields[1].name).toEqual('temperature');
-            expect(result[0].fields[1].type).toEqual('number');
+            const secondField = result[0].fields[1] as NumberField;
+            expect(secondField.name).toEqual('temperature');
+            expect(secondField.type).toEqual('number');
         });
     });
 });

@@ -1,9 +1,18 @@
-import { CollectionConfig, FieldHook } from 'payload/types';
+import { CollectionConfig, FieldHook, Field } from 'payload/types';
+import { CccDatasetBuilder } from '../helpers/ccc_dataset_builder';
 
 const setMetaDataReference = (metaDataId) => {
   const hook: FieldHook = async ({ value, data }) => metaDataId;
   return hook;
 };
+
+const allTheFields = new CccDatasetBuilder()
+    .addDataSet('climate')
+    .withNumericValue('summer-high', 'centigrade')
+    .withNumericValue('summer-low', 'centigrade')
+    .withNumericValue('winter-high', 'centigrade')
+    .withNumericValue('winter-high', 'centigrade')
+    .buildAllDataSets();
 
 const Cities: CollectionConfig = {
     slug: 'cities',
@@ -34,42 +43,7 @@ const Cities: CollectionConfig = {
         {
             name: 'comparable-data',
             type: 'group',
-            fields: [
-                {
-                    name: 'climate',
-                    type: 'group',
-                    fields: [
-                        {
-                            name: 'meta-data',
-                            type: 'relationship',
-                            relationTo: 'group-meta-data',
-                            hasMany: false,
-                            hooks: {
-                                beforeChange: [setMetaDataReference('climate')],
-                            },
-                            admin: { hidden: true },
-                        },
-                        { name: 'summer-high', type: 'number' },
-                        { name: 'summer-low', type: 'number' },
-                    ],
-                },
-                {
-                    name: 'people',
-                    type: 'group',
-                    fields: [
-                        {
-                            name: 'meta-data',
-                            type: 'relationship',
-                            relationTo: 'group-meta-data',
-                            hasMany: false,
-                            hooks: { beforeChange: [setMetaDataReference('people')] },
-                            admin: { hidden: true },
-                        },
-                        { name: 'population', type: 'number' },
-                        { name: 'english-speakers-percent', type: 'number' },
-                    ],
-                },
-            ],
+            fields: allTheFields,
         },
     ],
 };
