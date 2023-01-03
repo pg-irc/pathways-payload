@@ -1,10 +1,16 @@
 import { FieldHook, GroupField } from 'payload/types';
 
+export interface MetaData {
+    name: string;
+ };
+
 export class CccDatasetBuilder {
     groupFields: GroupField[];
+    metaData: MetaData[];
 
     constructor() {
         this.groupFields = [];
+        this.metaData = [];
     }
 
     getLastGroup(): GroupField {
@@ -39,6 +45,9 @@ export class CccDatasetBuilder {
                 },
             ],
         });
+        
+        this.metaData = [...this.metaData, { name }];
+
         return this;
     }
 
@@ -69,5 +78,8 @@ export class CccDatasetBuilder {
     buildAllDataSets(): GroupField[] {
         return this.groupFields;
     }
+    
+    buildMetaData(): MetaData[] {
+        return this.metaData;
+    }
 }
-

@@ -80,4 +80,13 @@ describe('CCC data set builder', () => {
             expect(secondField.type).toEqual('number');
         });
     });
+    describe ('building meta data', () => {
+        it('creates', () => {
+            const result = new CccDatasetBuilder()
+                .addDataSet('climate')
+                .withNumericField('Summer low', 'centigrade')
+                .buildMetaData();
+            expect(result[0].name).toEqual('climate');      
+        })
+    });
 });
