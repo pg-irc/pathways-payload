@@ -20,7 +20,6 @@ export class CccDatasetBuilder {
     }
 
     addDataSet(name: string): CccDatasetBuilder {
-
         const setMetaDataReference = (name: string): FieldHook => {
             const hook: FieldHook = async ({ value, data }) => name;
             return hook;
@@ -43,7 +42,7 @@ export class CccDatasetBuilder {
         return this;
     }
 
-    withTextValue(name: string): CccDatasetBuilder {
+    withTextField(name: string): CccDatasetBuilder {
         const lastGroup = this.getLastGroup();
         this.setLastGroup({
             ...lastGroup,
@@ -55,7 +54,10 @@ export class CccDatasetBuilder {
         return this;
     }
 
-    withNumericValue(name: string, _unit?: string): CccDatasetBuilder {
+    withNumericField(
+        name: string,
+        _unit?: 'percent' | 'centigrade' | 'dollars' | 'persons'
+    ): CccDatasetBuilder {
         const lastGroup = this.getLastGroup();
         this.setLastGroup({
             ...lastGroup,

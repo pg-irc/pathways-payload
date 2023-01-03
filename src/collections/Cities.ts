@@ -1,32 +1,29 @@
 import { CollectionConfig, FieldHook, Field } from 'payload/types';
 import { CccDatasetBuilder } from '../helpers/ccc_dataset_builder';
-import { valueIsValueWithRelation } from 'payload/dist/fields/config/types';
-
-const setMetaDataReference = (metaDataId) => {
-  const hook: FieldHook = async ({ value, data }) => metaDataId;
-  return hook;
-};
 
 const allTheFields = new CccDatasetBuilder()
-    .addDataSet('climate')
-    .withNumericValue('Average days of rain per year')
-    .withNumericValue('Summer high', 'centigrade')
-    .withNumericValue('Summer low', 'centigrade')
-    .withNumericValue('Winter high', 'centigrade')
-    .withNumericValue('Winter low', 'centigrade')
+    .addDataSet('Climate')
+    .withNumericField('Average days of rain per year')
+    .withNumericField('Summer high', 'centigrade')
+    .withNumericField('Summer low', 'centigrade')
+    .withNumericField('Winter high', 'centigrade')
+    .withNumericField('Winter low', 'centigrade')
     .addDataSet('People')
-    .withNumericValue('City population')
-    .withNumericValue('Province population')
-    .withNumericValue('English speakers', 'percent')
-    .withNumericValue('French speakers', 'percent')
-    .withNumericValue('Other speakers', 'percent')
+    .withNumericField('City population')
+    .withNumericField('Province population')
+    .withNumericField('English speakers', 'percent')
+    .withNumericField('French speakers', 'percent')
+    .withNumericField('Other speakers', 'percent')
     .addDataSet('Getting around')
-    .withNumericValue('Transit score®')
-    .withNumericValue('Walk score®')
+    .withNumericField('Transit score®')
+    .withNumericField('Walk score®')
     .addDataSet('Housing')
-    .withNumericValue('One bedroom rent average', 'dollars')
-    .withNumericValue('Apartment vacancy rate', 'percent')
-    .withNumericValue('Two bedroom rent average', 'dollars')
+    .withNumericField('One bedroom rent average', 'dollars')
+    .withNumericField('Apartment vacancy rate', 'percent')
+    .withNumericField('Two bedroom rent average', 'dollars')
+    .addDataSet('Health info for Ukrainians')
+    .withTextField('Health card')
+    .withTextField('Health and medications')
     .buildAllDataSets();
 
 const Cities: CollectionConfig = {
