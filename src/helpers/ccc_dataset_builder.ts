@@ -1,8 +1,10 @@
 import { FieldHook, GroupField } from 'payload/types';
 
+type Unit =  'percent' | 'centigrade' | 'dollars' | 'persons';
+
 export interface FieldMetaData {
     name: string;
-    unit?: 'percent' | 'centigrade' | 'dollars' | 'persons';
+    unit?: Unit;
 }
 
 export interface MetaData {
@@ -51,7 +53,7 @@ export class CccDatasetBuilder {
                 },
             ],
         });
-        
+
         this.metaData = [...this.metaData, { name, 'field-meta-data': [] }];
 
         return this;
@@ -66,7 +68,7 @@ export class CccDatasetBuilder {
                 { name, type: 'text', localized: true },
             ],
         });
-       
+
         const lastMetaData = this.metaData[this.metaData.length - 1];
         this.metaData[this.metaData.length - 1] = {
             ...lastMetaData,
@@ -76,10 +78,7 @@ export class CccDatasetBuilder {
         return this;
     }
 
-    withNumericField(
-        name: string,
-        unit?: 'percent' | 'centigrade' | 'dollars' | 'persons'
-    ): CccDatasetBuilder {
+    withNumericField(name: string, unit?: Unit): CccDatasetBuilder {
         const lastGroup = this.getLastGroup();
         this.setLastGroup({
             ...lastGroup,
@@ -89,7 +88,10 @@ export class CccDatasetBuilder {
         const lastMetaData = this.metaData[this.metaData.length - 1];
         this.metaData[this.metaData.length - 1] = {
             ...lastMetaData,
-            'field-meta-data': [...lastMetaData['field-meta-data'], { name, unit }],
+            'field-meta-data': [
+                ...lastMetaData['field-meta-data'],
+                { name, unit },
+            ],
         };
 
         return this;
@@ -98,7 +100,7 @@ export class CccDatasetBuilder {
     buildAllDataSets(): GroupField[] {
         return this.groupFields;
     }
-    
+
     buildMetaData(): MetaData[] {
         return this.metaData;
     }
