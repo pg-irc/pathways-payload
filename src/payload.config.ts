@@ -1,12 +1,12 @@
 import { buildConfig } from 'payload/config';
 import path from 'path';
-import Questions from './collections/Questions';
-import Users from './collections/Users';
-import Provinces from './collections/Provinces';
-import Cities from './collections/Cities';
-import Tags from './collections/Tags';
-import Chapters from './collections/Chapters';
-import Topics from './collections/Topics';
+import Questions from './collections/questions';
+import Users from './collections/users';
+import Provinces from './collections/provinces';
+import Cities from './collections/cities';
+import Tags from './collections/tags';
+import Chapters from './collections/chapters';
+import Topics from './collections/topics';
 import GroupMetaData from './collections/GroupMetaData';
 
 export default buildConfig({

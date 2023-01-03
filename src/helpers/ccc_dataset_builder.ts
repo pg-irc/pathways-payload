@@ -1,10 +1,5 @@
 import { FieldHook, GroupField } from 'payload/types';
 
-const setMetaDataReference = (metaDataId: string): FieldHook => {
-    const hook: FieldHook = async ({ value, data }) => metaDataId;
-    return hook;
-};
-
 export class CccDatasetBuilder {
     groupFields: GroupField[];
 
@@ -12,8 +7,26 @@ export class CccDatasetBuilder {
         this.groupFields = [];
     }
 
+    getLastGroup(): GroupField {
+        return this.groupFields[this.groupFields.length - 1];
+    }
+
+    setLastGroup(group: GroupField): void {
+        this.groupFields[this.groupFields.length - 1] = group;
+    }
+
+    appendGroup(group: GroupField): void {
+        this.groupFields = [...this.groupFields, group];
+    }
+
     addDataSet(name: string): CccDatasetBuilder {
-        const newGroup: GroupField = {
+
+        const setMetaDataReference = (name: string): FieldHook => {
+            const hook: FieldHook = async ({ value, data }) => name;
+            return hook;
+        };
+
+        this.appendGroup({
             name,
             type: 'group',
             fields: [
@@ -26,29 +39,28 @@ export class CccDatasetBuilder {
                     admin: { hidden: true },
                 },
             ],
-        };
-        this.groupFields = [...this.groupFields, newGroup];
+        });
         return this;
     }
 
     withTextValue(name: string): CccDatasetBuilder {
-        const lastGroup = this.groupFields[this.groupFields.length - 1];
-        this.groupFields[this.groupFields.length - 1] = {
+        const lastGroup = this.getLastGroup();
+        this.setLastGroup({
             ...lastGroup,
             fields: [
                 ...lastGroup.fields,
                 { name, type: 'text', localized: true },
             ],
-        };
+        });
         return this;
     }
 
     withNumericValue(name: string, _unit?: string): CccDatasetBuilder {
-        const lastGroup = this.groupFields[this.groupFields.length - 1];
-        this.groupFields[this.groupFields.length - 1] = {
+        const lastGroup = this.getLastGroup();
+        this.setLastGroup({
             ...lastGroup,
             fields: [...lastGroup.fields, { name, type: 'number' }],
-        };
+        });
         return this;
     }
 
