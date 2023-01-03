@@ -1,5 +1,5 @@
+#!/usr/local/bin/node
 const payload = require('payload');
-const path = require('path');
 
 const provinces = require('./provinces.json');
 
@@ -14,17 +14,15 @@ payload.init({
 });
 
 const createHomePage = async () => {
-  const createdMedia = await payload.create({
-      collection: 'provinces',
-      data: {
-          _id: 'PIE',
-          name: 'Prince Edward',
-      },
-  });
+    for (let i = 0; i < provinces.length; i++) {
+        await payload.create({
+            collection: 'provinces',
+            data: provinces[i],
+        });
+    }
 
-  console.log('Seed completed!');
-  process.exit(0);
+    console.log('Seed completed!');
+    process.exit(0);
 };
 
 createHomePage();
-

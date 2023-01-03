@@ -1,10 +1,10 @@
 [
     {
         "_id": "QC",
-        "name": { "en": "Quebec" }
+        "name": "Quebec"
     },
     {
         "_id": "BC",
-        "name": { "en": "British Columbia" }
+        "name": "British Columbia"
     }
 ]
