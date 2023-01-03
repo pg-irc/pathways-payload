@@ -2,6 +2,7 @@ import { FieldHook, GroupField } from 'payload/types';
 
 export interface FieldMetaData {
     name: string;
+    unit?: 'percent' | 'centigrade' | 'dollars' | 'persons';
 }
 
 export interface MetaData {
@@ -77,7 +78,7 @@ export class CccDatasetBuilder {
 
     withNumericField(
         name: string,
-        _unit?: 'percent' | 'centigrade' | 'dollars' | 'persons'
+        unit?: 'percent' | 'centigrade' | 'dollars' | 'persons'
     ): CccDatasetBuilder {
         const lastGroup = this.getLastGroup();
         this.setLastGroup({
@@ -88,7 +89,7 @@ export class CccDatasetBuilder {
         const lastMetaData = this.metaData[this.metaData.length - 1];
         this.metaData[this.metaData.length - 1] = {
             ...lastMetaData,
-            'field-meta-data': [...lastMetaData['field-meta-data'], { name }],
+            'field-meta-data': [...lastMetaData['field-meta-data'], { name, unit }],
         };
 
         return this;

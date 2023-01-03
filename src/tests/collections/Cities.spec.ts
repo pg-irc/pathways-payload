@@ -98,5 +98,14 @@ describe('CCC data set builder', () => {
             expect(result[0]['field-meta-data'][0].name).toEqual('one');
             expect(result[0]['field-meta-data'][1].name).toEqual('two');
         });
+        it ('created metadata field with unit if given', () => {
+            const result = new CccDatasetBuilder()
+                .addDataSet('climate')
+                .withNumericField('no unit')
+                .withNumericField('temperature', 'centigrade')
+                .buildMetaData(); 
+            expect(result[0]['field-meta-data'][0].unit).toBe(undefined);
+            expect(result[0]['field-meta-data'][1].unit).toBe('centigrade');
+        });
     });
 });
