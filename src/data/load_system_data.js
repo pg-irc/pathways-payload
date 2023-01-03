@@ -1,8 +1,6 @@
 #!/usr/local/bin/node
 const payload = require('payload');
-
 const provinces = require('./provinces.json');
-
 require('dotenv').config();
 
 const { PAYLOAD_SECRET, MONGODB_URI } = process.env;
