@@ -43,7 +43,7 @@ export class CccDatasetBuilder {
         return this;
     }
 
-    withNumericValue(name: string, _unit: string): CccDatasetBuilder {
+    withNumericValue(name: string, _unit?: string): CccDatasetBuilder {
         const lastGroup = this.groupFields[this.groupFields.length - 1];
         this.groupFields[this.groupFields.length - 1] = {
             ...lastGroup,

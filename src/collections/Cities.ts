@@ -1,5 +1,6 @@
 import { CollectionConfig, FieldHook, Field } from 'payload/types';
 import { CccDatasetBuilder } from '../helpers/ccc_dataset_builder';
+import { valueIsValueWithRelation } from 'payload/dist/fields/config/types';
 
 const setMetaDataReference = (metaDataId) => {
   const hook: FieldHook = async ({ value, data }) => metaDataId;
@@ -8,10 +9,24 @@ const setMetaDataReference = (metaDataId) => {
 
 const allTheFields = new CccDatasetBuilder()
     .addDataSet('climate')
-    .withNumericValue('summer-high', 'centigrade')
-    .withNumericValue('summer-low', 'centigrade')
-    .withNumericValue('winter-high', 'centigrade')
-    .withNumericValue('winter-high', 'centigrade')
+    .withNumericValue('Average days of rain per year')
+    .withNumericValue('Summer high', 'centigrade')
+    .withNumericValue('Summer low', 'centigrade')
+    .withNumericValue('Winter high', 'centigrade')
+    .withNumericValue('Winter low', 'centigrade')
+    .addDataSet('People')
+    .withNumericValue('City population')
+    .withNumericValue('Province population')
+    .withNumericValue('English speakers', 'percent')
+    .withNumericValue('French speakers', 'percent')
+    .withNumericValue('Other speakers', 'percent')
+    .addDataSet('Getting around')
+    .withNumericValue('Transit score®')
+    .withNumericValue('Walk score®')
+    .addDataSet('Housing')
+    .withNumericValue('One bedroom rent average', 'dollars')
+    .withNumericValue('Apartment vacancy rate', 'percent')
+    .withNumericValue('Two bedroom rent average', 'dollars')
     .buildAllDataSets();
 
 const Cities: CollectionConfig = {
