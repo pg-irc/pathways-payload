@@ -13,7 +13,7 @@ payload.init({
     local: true,
 });
 
-const createHomePage = async () => {
+const createSystemData = async () => {
     for (let i = 0; i < provinces.length; i++) {
         await payload.create({
             collection: 'provinces',
@@ -25,4 +25,4 @@ const createHomePage = async () => {
     process.exit(0);
 };
 
-createHomePage();
+createSystemData();

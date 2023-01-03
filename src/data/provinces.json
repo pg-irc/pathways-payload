@@ -1,10 +1,12 @@
 [
-    {
-        "_id": "QC",
-        "name": "Quebec"
-    },
-    {
-        "_id": "BC",
-        "name": "British Columbia"
-    }
+    { "_id": "AB", "name": "Alberta" },
+    { "_id": "BC", "name": "British Columbia" },
+    { "_id": "MB", "name": "Manitoba" },
+    { "_id": "NB", "name": "New Brunswick" },
+    { "_id": "NL", "name": "Newfoundland and Labrador" },
+    { "_id": "NS", "name": "Nova Scotia" },
+    { "_id": "ON", "name": "Ontario" },
+    { "_id": "PE", "name": "Prince Edward Island" },
+    { "_id": "QC", "name": "Quebec" },
+    { "_id": "SK", "name": "Saskatchewan" }
 ]
