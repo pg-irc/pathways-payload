@@ -1,7 +1,12 @@
 import { FieldHook, GroupField } from 'payload/types';
 
+export interface FieldMetaData {
+    name: string;
+}
+
 export interface MetaData {
     name: string;
+    'field-meta-data': FieldMetaData[];
  };
 
 export class CccDatasetBuilder {
@@ -46,7 +51,7 @@ export class CccDatasetBuilder {
             ],
         });
         
-        this.metaData = [...this.metaData, { name }];
+        this.metaData = [...this.metaData, { name, 'field-meta-data': [] }];
 
         return this;
     }
@@ -60,6 +65,13 @@ export class CccDatasetBuilder {
                 { name, type: 'text', localized: true },
             ],
         });
+       
+        const lastMetaData = this.metaData[this.metaData.length - 1];
+        this.metaData[this.metaData.length - 1] = {
+            ...lastMetaData,
+            'field-meta-data': [...lastMetaData['field-meta-data'], { name }],
+        };
+
         return this;
     }
 
@@ -72,6 +84,13 @@ export class CccDatasetBuilder {
             ...lastGroup,
             fields: [...lastGroup.fields, { name, type: 'number' }],
         });
+
+        const lastMetaData = this.metaData[this.metaData.length - 1];
+        this.metaData[this.metaData.length - 1] = {
+            ...lastMetaData,
+            'field-meta-data': [...lastMetaData['field-meta-data'], { name }],
+        };
+
         return this;
     }
 

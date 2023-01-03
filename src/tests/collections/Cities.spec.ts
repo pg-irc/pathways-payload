@@ -81,12 +81,22 @@ describe('CCC data set builder', () => {
         });
     });
     describe ('building meta data', () => {
-        it('creates', () => {
+        it('creates metadata record with name', () => {
             const result = new CccDatasetBuilder()
                 .addDataSet('climate')
                 .withNumericField('Summer low', 'centigrade')
                 .buildMetaData();
-            expect(result[0].name).toEqual('climate');      
-        })
+            expect(result[0].name).toEqual('climate');
+        });
+        it ('creates metadata field with name', () => {
+            const result = new CccDatasetBuilder()
+                .addDataSet('climate')
+                .withNumericField('one')
+                .withTextField('two')
+                .buildMetaData();
+            console.log(JSON.stringify(result));
+            expect(result[0]['field-meta-data'][0].name).toEqual('one');
+            expect(result[0]['field-meta-data'][1].name).toEqual('two');
+        });
     });
 });
