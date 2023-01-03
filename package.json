@@ -35,5 +35,20 @@
     "nodemon": "^2.0.6",
     "ts-node": "^9.1.1",
     "typescript": "^4.8.4"
+  },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "node",
+    "globalSetup": "<rootDir>/src/tests/globalSetup.ts",
+    "roots": [
+      "<rootDir>/src/"
+    ]
+  },
+  "prettier": {
+    "semi": true,
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "singleQuote": true,
+    "printWidth": 80
   }
 }
