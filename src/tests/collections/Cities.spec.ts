@@ -104,7 +104,11 @@ describe('CCC data set builder', () => {
                 .withNumericField('no unit')
                 .withNumericField('temperature', 'centigrade')
                 .buildMetaData(); 
+
+            expect(result[0]['field-meta-data'][0].name).toBe('no unit');
             expect(result[0]['field-meta-data'][0].unit).toBe(undefined);
+
+            expect(result[0]['field-meta-data'][1].name).toBe('temperature');
             expect(result[0]['field-meta-data'][1].unit).toBe('centigrade');
         });
     });
