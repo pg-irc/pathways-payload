@@ -1,13 +1,13 @@
 import { buildConfig } from 'payload/config';
 import path from 'path';
-import Questions from './collections/questions';
-import Users from './collections/users';
-import Provinces from './collections/provinces';
-import Cities from './collections/cities';
-import Tags from './collections/tags';
-import Chapters from './collections/chapters';
-import Topics from './collections/topics';
-import GroupMetaData from './collections/GroupMetaData';
+import Questions from './collections/xQuestions';
+import Users from './collections/xUsers';
+import Provinces from './collections/xProvinces';
+import Cities from './collections/xCities';
+import Tags from './collections/xTags';
+import Chapters from './collections/xChapters';
+import Topics from './collections/xTopics';
+import GroupMetaData from './collections/xGroupMetaData';
 
 export default buildConfig({
     serverURL: 'http://localhost:3000',
