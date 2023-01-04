@@ -6,10 +6,10 @@ export interface FieldMetaData {
     name: string;
     description?: string;
     type: 'text' | 'number';
-    unit?: Unit;
+    unit?: Unit; // unit only applies when type is number
 }
 
-export interface MetaData {
+export interface DataSetMetaData {
     _id: string;
     description?: string;
     'field-meta-data': FieldMetaData[];
@@ -17,7 +17,7 @@ export interface MetaData {
 
 export class CccDatasetBuilder {
     groupFields: GroupField[];
-    metaData: MetaData[];
+    metaData: DataSetMetaData[];
 
     constructor() {
         this.groupFields = [];
@@ -69,7 +69,7 @@ export class CccDatasetBuilder {
         return this;
     }
 
-    withTextField(name: string): CccDatasetBuilder {
+    addTextField(name: string): CccDatasetBuilder {
         const lastGroup = this.getLastGroup();
         this.setLastGroup({
             ...lastGroup,
@@ -91,7 +91,7 @@ export class CccDatasetBuilder {
         return this;
     }
 
-    withNumericField(name: string, unit?: Unit): CccDatasetBuilder {
+    addNumericField(name: string, unit?: Unit): CccDatasetBuilder {
         const lastGroup = this.getLastGroup();
         this.setLastGroup({
             ...lastGroup,
@@ -114,7 +114,7 @@ export class CccDatasetBuilder {
         return this.groupFields;
     }
 
-    buildMetaData(): MetaData[] {
+    buildMetaData(): DataSetMetaData[] {
         return this.metaData;
     }
 }

@@ -9,13 +9,13 @@ import {
 export const buildCityComparableData = (): any =>
     new CccDatasetBuilder()
         .addDataSet('climate')
-        .withNumericField('summer-low', 'centigrade')
-        .withNumericField('summer-high', 'centigrade')
-        .withNumericField('winter-low', 'centigrade')
-        .withNumericField('winter-high', 'centigrade')
+        .addNumericField('summer-low', 'centigrade')
+        .addNumericField('summer-high', 'centigrade')
+        .addNumericField('winter-low', 'centigrade')
+        .addNumericField('winter-high', 'centigrade')
         .addDataSet('people')
-        .withNumericField('population', 'persons')
-        .withNumericField('percent-english-speakers', 'percent')
+        .addNumericField('population', 'persons')
+        .addNumericField('percent-english-speakers', 'percent')
         .buildAllDataSets();
 
 describe('CCC data set builder', () => {
@@ -63,7 +63,7 @@ describe('CCC data set builder', () => {
         it('creates a localized text field', () => {
             const result = new CccDatasetBuilder()
                 .addDataSet('climate')
-                .withTextField('jobs')
+                .addTextField('jobs')
                 .buildAllDataSets();
             const secondField = result[0].fields[1] as TextField;
             expect(secondField.name).toEqual('jobs');
@@ -73,7 +73,7 @@ describe('CCC data set builder', () => {
         it('creates a numeric field', () => {
             const result = new CccDatasetBuilder()
                 .addDataSet('climate')
-                .withNumericField('temperature')
+                .addNumericField('temperature')
                 .buildAllDataSets();
             const secondField = result[0].fields[1] as NumberField;
             expect(secondField.name).toEqual('temperature');
@@ -84,15 +84,15 @@ describe('CCC data set builder', () => {
         it('creates metadata record with name', () => {
             const result = new CccDatasetBuilder()
                 .addDataSet('climate')
-                .withNumericField('Summer low', 'centigrade')
+                .addNumericField('Summer low', 'centigrade')
                 .buildMetaData();
             expect(result[0]._id).toEqual('climate');
         });
         it ('creates metadata field with name', () => {
             const result = new CccDatasetBuilder()
                 .addDataSet('climate')
-                .withNumericField('one')
-                .withTextField('two')
+                .addNumericField('one')
+                .addTextField('two')
                 .buildMetaData();
             console.log(JSON.stringify(result));
             expect(result[0]['field-meta-data'][0].name).toEqual('one');
@@ -101,8 +101,8 @@ describe('CCC data set builder', () => {
         it ('created metadata field with unit if given', () => {
             const result = new CccDatasetBuilder()
                 .addDataSet('climate')
-                .withNumericField('no unit')
-                .withNumericField('temperature', 'centigrade')
+                .addNumericField('no unit')
+                .addNumericField('temperature', 'centigrade')
                 .buildMetaData(); 
 
             expect(result[0]['field-meta-data'][0].name).toBe('no unit');
