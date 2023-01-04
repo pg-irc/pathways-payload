@@ -86,7 +86,7 @@ describe('CCC data set builder', () => {
                 .addDataSet('climate')
                 .withNumericField('Summer low', 'centigrade')
                 .buildMetaData();
-            expect(result[0].name).toEqual('climate');
+            expect(result[0]._id).toEqual('climate');
         });
         it ('creates metadata field with name', () => {
             const result = new CccDatasetBuilder()
