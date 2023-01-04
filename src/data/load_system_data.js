@@ -2,6 +2,7 @@
 const payload = require('payload');
 const provinces = require('./provinces.json');
 require('dotenv').config();
+const { allTheMetaData } = require('../../dist/data/ccc_fields.js');
 
 const { PAYLOAD_SECRET, MONGODB_URI } = process.env;
 
@@ -18,6 +19,8 @@ const createSystemData = async () => {
             data: provinces[i],
         });
     }
+    
+    console.log(JSON.stringify(allTheMetaData, null, 4));
 
     console.log('Seed completed!');
     process.exit(0);
