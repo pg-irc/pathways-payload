@@ -8,7 +8,6 @@ const Questions: CollectionConfig = {
             'questionText',
             'displayOrder',
             'answers',
-            'updatedAt',
         ],
         useAsTitle: 'questionText',
     },

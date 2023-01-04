@@ -3,8 +3,8 @@ import { CollectionConfig } from 'payload/types';
 const Chapters: CollectionConfig = {
     slug: 'chapters',
     admin: {
-        defaultColumns: ['name', 'displayOrder'],
-        useAsTitle: 'name',
+        defaultColumns: ['chapterName', 'displayOrder'],
+        useAsTitle: 'chapterName',
     },
     access: {
         create: () => true,
@@ -13,7 +13,7 @@ const Chapters: CollectionConfig = {
         delete: () => true,
     },
     fields: [
-        { name: 'name', type: 'text', localized: true },
+        { name: 'chapterName', type: 'text', localized: true },
         { name: 'displayOrder', type: 'number' },
     ],
     timestamps: false,
