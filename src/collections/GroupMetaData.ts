@@ -39,7 +39,7 @@ const GroupMetaData: CollectionConfig = {
             ],
             admin: {
                 components: {
-                    RowLabel: ({ data, index }) =>
+                    RowLabel: ({ data, path, index }) =>
                         data?.name ||
                         `Field Meta Data ${String(index).padStart(2, '0')}`,
                 },

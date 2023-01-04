@@ -60,7 +60,7 @@ const Questions: CollectionConfig = {
             ],
             admin: {
                 components: {
-                    RowLabel: ({ data, index }) =>
+                    RowLabel: ({ data, path, index}) =>
                         data?.answerText ||
                         `Answer ${String(index).padStart(2, '0')}`,
                 },
