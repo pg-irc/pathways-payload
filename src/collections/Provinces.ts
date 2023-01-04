@@ -16,6 +16,7 @@ const Provinces: CollectionConfig = {
         { name: 'id', type: 'text', label: 'Abbreviated name', unique: true },
         { name: 'name', type: 'text', localized: true },
     ],
+    timestamps: false,
 };
 
 export default Provinces;

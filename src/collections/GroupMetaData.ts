@@ -20,6 +20,7 @@ const GroupMetaData: CollectionConfig = {
             type: 'array',
             fields: [
                 { name: 'name', type: 'text', localized: false },
+                { name: 'type', type: 'text' }, // can only be one of the strings 'number' or 'text'
                 { name: 'description', type: 'text', localized: true },
                 {
                     name: 'unit',
@@ -31,14 +32,14 @@ const GroupMetaData: CollectionConfig = {
                         'centigrade',
                         'localized text',
                     ],
-                    required: true,
+                    required: false,
                     hasMany: false,
                     label: 'Unit of measurement',
                 },
             ],
             admin: {
                 components: {
-                    RowLabel: ({ data, index }) =>
+                    RowLabel: ({ data, path, index }) =>
                         data?.name ||
                         `Field Meta Data ${String(index).padStart(2, '0')}`,
                 },

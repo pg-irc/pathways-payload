@@ -1,4 +1,4 @@
-import { CollectionConfig } from "payload/types";
+import { CollectionConfig } from 'payload/types';
 
 const Questions: CollectionConfig = {
     slug: 'questions',
@@ -60,7 +60,7 @@ const Questions: CollectionConfig = {
             ],
             admin: {
                 components: {
-                    RowLabel: ({ data, index }) =>
+                    RowLabel: ({ data, path, index}) =>
                         data?.answerText ||
                         `Answer ${String(index).padStart(2, '0')}`,
                 },
@@ -89,19 +89,19 @@ const Questions: CollectionConfig = {
 
 const provincesIsEmpty = () => ({ provinces: { equals: [] } });
 
-const provincesContainsId = (id) => ({ provinces: { in: id } }); 
+const provincesContainsId = (id) => ({ provinces: { in: id } });
 
 const appliesToProvince = (id) => ({
-  or: [provincesIsEmpty(), provincesContainsId(id)],
+    or: [provincesIsEmpty(), provincesContainsId(id)],
 });
 
-const getQuestionsForProvince = async (req, provinceId) => { 
-  const cms = req.payload;
-  const found = await cms.find({
-    collection: "questions",
-    where: appliesToProvince(provinceId),
-  });
-  return found;
+const getQuestionsForProvince = async (req, provinceId) => {
+    const cms = req.payload;
+    const found = await cms.find({
+        collection: 'questions',
+        where: appliesToProvince(provinceId),
+    });
+    return found;
 };
 
 export default Questions;
