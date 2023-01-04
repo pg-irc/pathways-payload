@@ -1,8 +1,8 @@
 #!/usr/local/bin/node
 const payload = require('payload');
-const provinces = require('./provinces.json');
+const provinces = require('../src/data/provinces.json');
 require('dotenv').config();
-const { allTheMetaData } = require('../../dist/data/ccc_fields.js');
+const { allTheMetaData } = require('../dist/data/ccc_fields.js');
 
 const { PAYLOAD_SECRET, MONGODB_URI } = process.env;
 
