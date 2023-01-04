@@ -32,7 +32,7 @@ const GroupMetaData: CollectionConfig = {
                         'centigrade',
                         'localized text',
                     ],
-                    required: true,
+                    required: false,
                     hasMany: false,
                     label: 'Unit of measurement',
                 },

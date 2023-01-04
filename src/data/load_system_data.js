@@ -20,7 +20,12 @@ const createSystemData = async () => {
         });
     }
     
-    console.log(JSON.stringify(allTheMetaData, null, 4));
+    for (let i = 0; i < allTheMetaData.length; i++) {
+        await payload.create({
+            collection: 'group-meta-data',
+            data: allTheMetaData[i],
+        });
+    }
 
     console.log('Seed completed!');
     process.exit(0);
