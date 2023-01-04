@@ -23,7 +23,7 @@ const GroupMetaData: CollectionConfig = {
                 { name: 'type', type: 'text' }, // can only be one of the strings 'number' or 'text'
                 { name: 'description', type: 'text', localized: true },
                 {
-                    name: 'unit',
+                    name: 'unit', // unit can only exist on 'number' fields
                     type: 'select',
                     options: [
                         'persons',
