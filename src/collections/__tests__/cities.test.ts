@@ -16,7 +16,7 @@ export const buildCityComparableData = (): any =>
         .addDataSet('people')
         .addNumericField('population', 'persons')
         .addNumericField('percent-english-speakers', 'percent')
-        .buildAllDataSets();
+        .buildCityDataFields();
 
 describe('CCC data set builder', () => {
     describe('building a data set', () => {
@@ -24,7 +24,7 @@ describe('CCC data set builder', () => {
         beforeEach(() => {
             result = new CccDatasetBuilder()
                 .addDataSet('climate')
-                .buildAllDataSets();
+                .buildCityDataFields();
         });
         it('sets the data set name', () => {
             expect(result[0].name).toEqual('climate');
@@ -54,7 +54,7 @@ describe('CCC data set builder', () => {
             const result = new CccDatasetBuilder()
                 .addDataSet('foo')
                 .addDataSet('bar')
-                .buildAllDataSets();
+                .buildCityDataFields();
             expect(result[0].name).toEqual('foo');
             expect(result[1].name).toEqual('bar');
         });
@@ -64,7 +64,7 @@ describe('CCC data set builder', () => {
             const result = new CccDatasetBuilder()
                 .addDataSet('climate')
                 .addTextField('jobs')
-                .buildAllDataSets();
+                .buildCityDataFields();
             const secondField = result[0].fields[1] as TextField;
             expect(secondField.name).toEqual('jobs');
             expect(result[0].fields[1].type).toEqual('text');
@@ -74,7 +74,7 @@ describe('CCC data set builder', () => {
             const result = new CccDatasetBuilder()
                 .addDataSet('climate')
                 .addNumericField('temperature')
-                .buildAllDataSets();
+                .buildCityDataFields();
             const secondField = result[0].fields[1] as NumberField;
             expect(secondField.name).toEqual('temperature');
             expect(secondField.type).toEqual('number');

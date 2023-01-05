@@ -1,5 +1,5 @@
 import { CollectionConfig, FieldHook, Field } from 'payload/types';
-import { allTheFields as cccFields } from '../data/ccc_fields';
+import { cityDataFields } from '../data/ccc_fields';
 
 const Cities: CollectionConfig = {
     slug: 'cities',
@@ -28,9 +28,9 @@ const Cities: CollectionConfig = {
             required: true,
         },
         {
-            name: 'comparable-data',
+            name: 'city-data',
             type: 'group',
-            fields: cccFields,
+            fields: cityDataFields,
         },
     ],
 };
