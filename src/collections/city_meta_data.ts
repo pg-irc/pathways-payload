@@ -16,11 +16,11 @@ const CityMetaData: CollectionConfig = {
         { name: 'id', type: 'text', unique: true, localized: false },
         { name: 'description', type: 'text', localized: true },
         {
-            name: 'cityMetaData',
+            name: 'cityMetaData',// TODO rename to cityFields
             type: 'array',
             fields: [
-                { name: 'name', type: 'text', localized: false },
-                { name: 'type', type: 'text' }, // can only be one of the strings 'number' or 'text'
+                { name: 'name', type: 'text', localized: false }, // TODO rename to fieldName
+                { name: 'type', type: 'text', localized: false }, // can only be one of the strings 'number' or 'text', TODO rename to fieldType
                 { name: 'description', type: 'text', localized: true },
                 {
                     name: 'unit', // unit can only exist on 'number' fields
@@ -41,7 +41,7 @@ const CityMetaData: CollectionConfig = {
                 components: {
                     RowLabel: ({ data, path, index }) =>
                         data?.name ||
-                        `Field Meta Data ${String(index).padStart(2, '0')}`,
+                        `City meta data ${String(index).padStart(2, '0')}`,
                 },
             },
         },
