@@ -26,6 +26,18 @@ const createSystemData = async () => {
             data: allTheMetaData[i],
         });
     }
+    await payload.update({
+        collection: 'provinces',
+        locale: 'de',
+        id: 'BC',
+        data: { provinceName: 'Britisch-Kolumbien' },
+    });
+    await payload.update({
+        collection: 'provinces',
+        locale: 'es',
+        id: 'BC',
+        data: { provinceName: 'Columbia Británica' },
+    });
 
     console.log('Seed completed!');
     process.exit(0);
