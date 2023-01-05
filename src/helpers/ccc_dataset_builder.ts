@@ -12,7 +12,7 @@ export interface CityMetaDatum {
 export interface CityMetaDataSet {
     _id: string;
     description?: string;
-    'field-meta-data': CityMetaDatum[];
+    cityMetaData: CityMetaDatum[];
 }
 
 export class CccDatasetBuilder {
@@ -72,7 +72,7 @@ export class CccDatasetBuilder {
         this.appendCityMetaDataSet({
             _id: name,
             description: 'dummy description',
-            'field-meta-data': [],
+            cityMetaData: [],
         }); 
 
         return this;
@@ -91,8 +91,8 @@ export class CccDatasetBuilder {
         const lastMetaData = this.getLastCityMetaDataSet();
         this.setLastCityMetaDataSet({
             ...lastMetaData,
-            'field-meta-data': [
-                ...lastMetaData['field-meta-data'],
+            cityMetaData: [
+                ...lastMetaData.cityMetaData,
                 { name, description: 'dummy description 2', type: 'text' },
             ],
         });
@@ -110,8 +110,8 @@ export class CccDatasetBuilder {
         const lastMetaData = this.getLastCityMetaDataSet();
         this.setLastCityMetaDataSet({
             ...lastMetaData,
-            'field-meta-data': [
-                ...lastMetaData['field-meta-data'],
+            cityMetaData: [
+                ...lastMetaData.cityMetaData,
                 {
                     name,
                     description: 'dummy description 1',

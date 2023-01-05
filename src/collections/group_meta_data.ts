@@ -16,7 +16,7 @@ const GroupMetaData: CollectionConfig = {
         { name: 'id', type: 'text', unique: true, localized: false },
         { name: 'description', type: 'text', localized: true },
         {
-            name: 'field-meta-data',
+            name: 'cityMetaData',
             type: 'array',
             fields: [
                 { name: 'name', type: 'text', localized: false },
