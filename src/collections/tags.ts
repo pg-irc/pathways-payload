@@ -13,7 +13,6 @@ const Tags: CollectionConfig = {
         delete: () => true,
     },
     fields: [{ name: 'id', type: 'text', unique: true }],
-    timestamps: false,
 };
 
 export default Tags;
