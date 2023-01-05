@@ -19,7 +19,7 @@ const CityMetaData: CollectionConfig = {
             name: 'cityMetaData',// TODO rename to cityFields
             type: 'array',
             fields: [
-                { name: 'name', type: 'text', localized: false }, // TODO rename to fieldName
+                { name: 'fieldName', type: 'text', localized: false }, // TODO rename to fieldName
                 { name: 'type', type: 'text', localized: false }, // can only be one of the strings 'number' or 'text', TODO rename to fieldType
                 { name: 'description', type: 'text', localized: true },
                 {
@@ -40,7 +40,7 @@ const CityMetaData: CollectionConfig = {
             admin: {
                 components: {
                     RowLabel: ({ data, path, index }) =>
-                        data?.name ||
+                        data?.fieldName ||
                         `City meta data ${String(index).padStart(2, '0')}`,
                 },
             },

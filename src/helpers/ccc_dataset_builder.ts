@@ -3,7 +3,7 @@ import { FieldHook, GroupField } from 'payload/types';
 type Unit = 'percent' | 'centigrade' | 'dollars' | 'persons';
 
 export interface CityMetaDatum {
-    name: string;
+    fieldName: string;
     description?: string;
     type: 'text' | 'number';
     unit?: Unit; // unit only applies when type is number
@@ -93,7 +93,7 @@ export class CccDatasetBuilder {
             ...lastMetaData,
             cityMetaData: [
                 ...lastMetaData.cityMetaData,
-                { name, description: 'dummy description 2', type: 'text' },
+                { fieldName: name, description: 'dummy description 2', type: 'text' },
             ],
         });
 
@@ -113,7 +113,7 @@ export class CccDatasetBuilder {
             cityMetaData: [
                 ...lastMetaData.cityMetaData,
                 {
-                    name,
+                    fieldName: name,
                     description: 'dummy description 1',
                     unit,
                     type: 'number',

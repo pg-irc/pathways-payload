@@ -95,8 +95,8 @@ describe('CCC data set builder', () => {
                 .addTextField('two')
                 .buildMetaData();
             console.log(JSON.stringify(result));
-            expect(result[0].cityMetaData[0].name).toEqual('one');
-            expect(result[0].cityMetaData[1].name).toEqual('two');
+            expect(result[0].cityMetaData[0].fieldName).toEqual('one');
+            expect(result[0].cityMetaData[1].fieldName).toEqual('two');
         });
         it ('created metadata field with unit if given', () => {
             const result = new CccDatasetBuilder()
@@ -105,10 +105,10 @@ describe('CCC data set builder', () => {
                 .addNumericField('temperature', 'centigrade')
                 .buildMetaData(); 
 
-            expect(result[0].cityMetaData[0].name).toBe('no unit');
+            expect(result[0].cityMetaData[0].fieldName).toBe('no unit');
             expect(result[0].cityMetaData[0].unit).toBe(undefined);
 
-            expect(result[0].cityMetaData[1].name).toBe('temperature');
+            expect(result[0].cityMetaData[1].fieldName).toBe('temperature');
             expect(result[0].cityMetaData[1].unit).toBe('centigrade');
         });
     });
