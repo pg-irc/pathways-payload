@@ -2,7 +2,7 @@ import { FieldHook, GroupField } from 'payload/types';
 
 type Unit = 'percent' | 'centigrade' | 'dollars' | 'persons';
 
-export interface CityMetaDatum {
+export interface CityField {
     fieldName: string;
     fieldType: 'text' | 'number';
     unit?: Unit; // unit only applies when type is number
@@ -12,7 +12,7 @@ export interface CityMetaDatum {
 export interface CityMetaDataSet {
     _id: string;
     description?: string;
-    cityFields: CityMetaDatum[];
+    cityFields: CityField[];
 }
 
 export class CccDatasetBuilder {
