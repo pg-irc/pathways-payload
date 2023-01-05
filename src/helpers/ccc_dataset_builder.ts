@@ -4,15 +4,15 @@ type Unit = 'percent' | 'centigrade' | 'dollars' | 'persons';
 
 export interface CityMetaDatum {
     fieldName: string;
-    description?: string;
     fieldType: 'text' | 'number';
     unit?: Unit; // unit only applies when type is number
+    description?: string;
 }
 
 export interface CityMetaDataSet {
     _id: string;
     description?: string;
-    cityMetaData: CityMetaDatum[];
+    cityFields: CityMetaDatum[];
 }
 
 export class CccDatasetBuilder {
@@ -72,7 +72,7 @@ export class CccDatasetBuilder {
         this.appendCityMetaDataSet({
             _id: name,
             description: 'dummy description',
-            cityMetaData: [],
+            cityFields: [],
         }); 
 
         return this;
@@ -91,8 +91,8 @@ export class CccDatasetBuilder {
         const lastMetaData = this.getLastCityMetaDataSet();
         this.setLastCityMetaDataSet({
             ...lastMetaData,
-            cityMetaData: [
-                ...lastMetaData.cityMetaData,
+            cityFields: [
+                ...lastMetaData.cityFields,
                 { fieldName: name, description: 'dummy description 2', fieldType: 'text' },
             ],
         });
@@ -110,8 +110,8 @@ export class CccDatasetBuilder {
         const lastMetaData = this.getLastCityMetaDataSet();
         this.setLastCityMetaDataSet({
             ...lastMetaData,
-            cityMetaData: [
-                ...lastMetaData.cityMetaData,
+            cityFields: [
+                ...lastMetaData.cityFields,
                 {
                     fieldName: name,
                     description: 'dummy description 1',
