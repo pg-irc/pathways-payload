@@ -1,5 +1,5 @@
 import { User } from '../../payload-types';
-import testCredentials from '../credentials';
+import testCredentials from '../../tests/credentials';
 
 require('isomorphic-fetch');
 
