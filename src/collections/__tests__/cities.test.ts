@@ -41,7 +41,7 @@ describe('CCC data set builder', () => {
         });
         it('sets the field relation to', () => {
             const field = result[0].fields[0] as RelationshipField;
-            expect(field.relationTo).toEqual('group-meta-data');
+            expect(field.relationTo).toEqual('city-meta-data');
         });
         it('sets the field hasMany to false', () => {
             const field = result[0].fields[0] as RelationshipField;

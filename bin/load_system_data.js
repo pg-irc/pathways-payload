@@ -22,7 +22,7 @@ const createSystemData = async () => {
     
     for (let i = 0; i < allTheMetaData.length; i++) {
         await payload.create({
-            collection: 'group-meta-data',
+            collection: 'city-meta-data',
             data: allTheMetaData[i],
         });
     }

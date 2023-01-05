@@ -1,7 +1,7 @@
 import { CollectionConfig } from 'payload/types';
 
-const GroupMetaData: CollectionConfig = {
-    slug: 'group-meta-data',
+const CityMetaData: CollectionConfig = {
+    slug: 'city-meta-data',
     admin: {
         defaultColumns: ['id', 'fields', 'description'],
         useAsTitle: 'id',
@@ -48,4 +48,4 @@ const GroupMetaData: CollectionConfig = {
     ],
 };
 
-export default GroupMetaData;
+export default CityMetaData;

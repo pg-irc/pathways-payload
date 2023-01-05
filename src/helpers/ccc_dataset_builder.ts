@@ -61,7 +61,7 @@ export class CccDatasetBuilder {
                 {
                     name: 'meta-data',
                     type: 'relationship',
-                    relationTo: 'group-meta-data',
+                    relationTo: 'city-meta-data',
                     hasMany: false,
                     hooks: { beforeChange: [setMetaDataReference(name)] },
                     admin: { hidden: true },
