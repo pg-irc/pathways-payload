@@ -5,7 +5,7 @@ type Unit = 'percent' | 'centigrade' | 'dollars' | 'persons';
 export interface CityMetaDatum {
     fieldName: string;
     description?: string;
-    type: 'text' | 'number';
+    fieldType: 'text' | 'number';
     unit?: Unit; // unit only applies when type is number
 }
 
@@ -93,7 +93,7 @@ export class CccDatasetBuilder {
             ...lastMetaData,
             cityMetaData: [
                 ...lastMetaData.cityMetaData,
-                { fieldName: name, description: 'dummy description 2', type: 'text' },
+                { fieldName: name, description: 'dummy description 2', fieldType: 'text' },
             ],
         });
 
@@ -116,7 +116,7 @@ export class CccDatasetBuilder {
                     fieldName: name,
                     description: 'dummy description 1',
                     unit,
-                    type: 'number',
+                    fieldType: 'number',
                 },
             ],
         });

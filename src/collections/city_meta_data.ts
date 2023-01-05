@@ -19,8 +19,8 @@ const CityMetaData: CollectionConfig = {
             name: 'cityMetaData',// TODO rename to cityFields
             type: 'array',
             fields: [
-                { name: 'fieldName', type: 'text', localized: false }, // TODO rename to fieldName
-                { name: 'type', type: 'text', localized: false }, // can only be one of the strings 'number' or 'text', TODO rename to fieldType
+                { name: 'fieldName', type: 'text', localized: false },
+                { name: 'fieldType', type: 'text', localized: false }, // can only be one of the strings 'number' or 'text', TODO rename to fieldType
                 { name: 'description', type: 'text', localized: true },
                 {
                     name: 'unit', // unit can only exist on 'number' fields
