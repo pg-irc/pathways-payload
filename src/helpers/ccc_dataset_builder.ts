@@ -2,26 +2,26 @@ import { FieldHook, GroupField } from 'payload/types';
 
 type Unit = 'percent' | 'centigrade' | 'dollars' | 'persons';
 
-export interface FieldMetaData {
+export interface CityMetaDatum {
     name: string;
     description?: string;
     type: 'text' | 'number';
     unit?: Unit; // unit only applies when type is number
 }
 
-export interface DataSetMetaData {
+export interface CityMetaDataSet {
     _id: string;
     description?: string;
-    'field-meta-data': FieldMetaData[];
+    'field-meta-data': CityMetaDatum[];
 }
 
 export class CccDatasetBuilder {
     cityDataSets: GroupField[];
-    metaData: DataSetMetaData[];
+    cityMetaDataSets: CityMetaDataSet[];
 
     constructor() {
         this.cityDataSets = [];
-        this.metaData = [];
+        this.cityMetaDataSets = [];
     }
 
     getLastCityDataSet(): GroupField {
@@ -34,6 +34,18 @@ export class CccDatasetBuilder {
 
     appendCityDataSet(set: GroupField): void {
         this.cityDataSets = [...this.cityDataSets, set];
+    }
+    
+    getLastCityMetaDataSet(): CityMetaDataSet {
+        return this.cityMetaDataSets[this.cityMetaDataSets.length - 1];
+    }
+    
+    setLastCityMetaDataSet(set: CityMetaDataSet): void {
+        this.cityMetaDataSets[this.cityMetaDataSets.length - 1] = set;
+    }
+    
+    appendCityMetaDataSet(set: CityMetaDataSet): void {
+        this.cityMetaDataSets = [...this.cityMetaDataSets, set];
     }
 
     addDataSet(name: string): CccDatasetBuilder {
@@ -56,15 +68,12 @@ export class CccDatasetBuilder {
                 },
             ],
         });
-
-        this.metaData = [
-            ...this.metaData,
-            {
-                _id: name,
-                description: 'dummy description',
-                'field-meta-data': [],
-            },
-        ];
+        
+        this.appendCityMetaDataSet({
+            _id: name,
+            description: 'dummy description',
+            'field-meta-data': [],
+        }); 
 
         return this;
     }
@@ -79,14 +88,14 @@ export class CccDatasetBuilder {
             ],
         });
 
-        const lastMetaData = this.metaData[this.metaData.length - 1];
-        this.metaData[this.metaData.length - 1] = {
+        const lastMetaData = this.getLastCityMetaDataSet();
+        this.setLastCityMetaDataSet({
             ...lastMetaData,
             'field-meta-data': [
                 ...lastMetaData['field-meta-data'],
                 { name, description: 'dummy description 2', type: 'text' },
             ],
-        };
+        });
 
         return this;
     }
@@ -98,14 +107,19 @@ export class CccDatasetBuilder {
             fields: [...lastDataSet.fields, { name, type: 'number' }],
         });
 
-        const lastMetaData = this.metaData[this.metaData.length - 1];
-        this.metaData[this.metaData.length - 1] = {
+        const lastMetaData = this.getLastCityMetaDataSet();
+        this.setLastCityMetaDataSet({
             ...lastMetaData,
             'field-meta-data': [
                 ...lastMetaData['field-meta-data'],
-                { name, description: 'dummy description 1', unit, type: 'number' },
+                {
+                    name,
+                    description: 'dummy description 1',
+                    unit,
+                    type: 'number',
+                },
             ],
-        };
+        });
 
         return this;
     }
@@ -114,7 +128,7 @@ export class CccDatasetBuilder {
         return this.cityDataSets;
     }
 
-    buildMetaData(): DataSetMetaData[] {
-        return this.metaData;
+    buildMetaData(): CityMetaDataSet[] {
+        return this.cityMetaDataSets;
     }
 }
