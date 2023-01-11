@@ -34,6 +34,6 @@ const builder = new CccDatasetBuilder()
     .addDataSet('Driving for Ukrainians')
     .addTextField('Driving information');
 
-export const allTheFields = builder.buildAllDataSets();
+export const cityDataFields = builder.buildCityDataFields();
 
 export const allTheMetaData = builder.buildMetaData();

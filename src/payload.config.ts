@@ -7,7 +7,7 @@ import Cities from './collections/cities';
 import Tags from './collections/tags';
 import Chapters from './collections/chapters';
 import Topics from './collections/topics';
-import GroupMetaData from './collections/GroupMetaData';
+import CityMetaData from './collections/city_meta_data';
 
 export default buildConfig({
     serverURL: 'http://localhost:3000',
@@ -18,7 +18,7 @@ export default buildConfig({
         Questions,
         Provinces,
         Cities,
-        GroupMetaData,
+        CityMetaData,
         Chapters,
         Topics,
         Tags,

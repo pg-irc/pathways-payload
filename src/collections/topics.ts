@@ -3,8 +3,8 @@ import { CollectionConfig } from 'payload/types';
 const Topics: CollectionConfig = {
     slug: 'topics',
     admin: {
-        defaultColumns: ['name', 'tags', 'provinces', 'displayOrder'],
-        useAsTitle: 'name',
+        defaultColumns: ['topicName', 'tags', 'provinces', 'displayOrder'],
+        useAsTitle: 'topicName',
     },
     access: {
         create: () => true,
@@ -14,7 +14,7 @@ const Topics: CollectionConfig = {
     },
     fields: [
         {
-            name: 'name',
+            name: 'topicName',
             type: 'text',
             localized: true,
         },
@@ -48,7 +48,6 @@ const Topics: CollectionConfig = {
             type: 'number',
         },
     ],
-    timestamps: false,
 };
 
 export default Topics;

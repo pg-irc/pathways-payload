@@ -2,38 +2,50 @@ import { FieldHook, GroupField } from 'payload/types';
 
 type Unit = 'percent' | 'centigrade' | 'dollars' | 'persons';
 
-export interface FieldMetaData {
-    name: string;
-    description?: string;
-    type: 'text' | 'number';
+export interface CityField {
+    fieldName: string;
+    fieldType: 'text' | 'number';
     unit?: Unit; // unit only applies when type is number
+    description?: string;
 }
 
-export interface DataSetMetaData {
+export interface CityMetaDataSet {
     _id: string;
     description?: string;
-    'field-meta-data': FieldMetaData[];
+    cityFields: CityField[];
 }
 
 export class CccDatasetBuilder {
-    groupFields: GroupField[];
-    metaData: DataSetMetaData[];
+    cityDataSets: GroupField[];
+    cityMetaDataSets: CityMetaDataSet[];
 
     constructor() {
-        this.groupFields = [];
-        this.metaData = [];
+        this.cityDataSets = [];
+        this.cityMetaDataSets = [];
     }
 
-    getLastGroup(): GroupField {
-        return this.groupFields[this.groupFields.length - 1];
+    getLastCityDataSet(): GroupField {
+        return this.cityDataSets[this.cityDataSets.length - 1];
     }
 
-    setLastGroup(group: GroupField): void {
-        this.groupFields[this.groupFields.length - 1] = group;
+    setLastCityDataSet(set: GroupField): void {
+        this.cityDataSets[this.cityDataSets.length - 1] = set;
     }
 
-    appendGroup(group: GroupField): void {
-        this.groupFields = [...this.groupFields, group];
+    appendCityDataSet(set: GroupField): void {
+        this.cityDataSets = [...this.cityDataSets, set];
+    }
+    
+    getLastCityMetaDataSet(): CityMetaDataSet {
+        return this.cityMetaDataSets[this.cityMetaDataSets.length - 1];
+    }
+    
+    setLastCityMetaDataSet(set: CityMetaDataSet): void {
+        this.cityMetaDataSets[this.cityMetaDataSets.length - 1] = set;
+    }
+    
+    appendCityMetaDataSet(set: CityMetaDataSet): void {
+        this.cityMetaDataSets = [...this.cityMetaDataSets, set];
     }
 
     addDataSet(name: string): CccDatasetBuilder {
@@ -42,79 +54,81 @@ export class CccDatasetBuilder {
             return hook;
         };
 
-        this.appendGroup({
+        this.appendCityDataSet({
             name,
             type: 'group',
             fields: [
                 {
                     name: 'meta-data',
                     type: 'relationship',
-                    relationTo: 'group-meta-data',
+                    relationTo: 'city-meta-data',
                     hasMany: false,
                     hooks: { beforeChange: [setMetaDataReference(name)] },
                     admin: { hidden: true },
                 },
             ],
         });
-
-        this.metaData = [
-            ...this.metaData,
-            {
-                _id: name,
-                description: 'dummy description',
-                'field-meta-data': [],
-            },
-        ];
+        
+        this.appendCityMetaDataSet({
+            _id: name,
+            description: 'dummy description',
+            cityFields: [],
+        }); 
 
         return this;
     }
 
     addTextField(name: string): CccDatasetBuilder {
-        const lastGroup = this.getLastGroup();
-        this.setLastGroup({
-            ...lastGroup,
+        const lastDataSet = this.getLastCityDataSet();
+        this.setLastCityDataSet({
+            ...lastDataSet,
             fields: [
-                ...lastGroup.fields,
+                ...lastDataSet.fields,
                 { name, type: 'text', localized: true },
             ],
         });
 
-        const lastMetaData = this.metaData[this.metaData.length - 1];
-        this.metaData[this.metaData.length - 1] = {
+        const lastMetaData = this.getLastCityMetaDataSet();
+        this.setLastCityMetaDataSet({
             ...lastMetaData,
-            'field-meta-data': [
-                ...lastMetaData['field-meta-data'],
-                { name, description: 'dummy description 2', type: 'text' },
+            cityFields: [
+                ...lastMetaData.cityFields,
+                { fieldName: name, description: 'dummy description 2', fieldType: 'text' },
             ],
-        };
+        });
 
         return this;
     }
 
     addNumericField(name: string, unit?: Unit): CccDatasetBuilder {
-        const lastGroup = this.getLastGroup();
-        this.setLastGroup({
-            ...lastGroup,
-            fields: [...lastGroup.fields, { name, type: 'number' }],
+        const lastDataSet = this.getLastCityDataSet();
+        this.setLastCityDataSet({
+            ...lastDataSet,
+            fields: [...lastDataSet.fields, { name, type: 'number' }],
         });
 
-        const lastMetaData = this.metaData[this.metaData.length - 1];
-        this.metaData[this.metaData.length - 1] = {
+        const lastMetaData = this.getLastCityMetaDataSet();
+        this.setLastCityMetaDataSet({
             ...lastMetaData,
-            'field-meta-data': [
-                ...lastMetaData['field-meta-data'],
-                { name, description: 'dummy description 1', unit, type: 'number' },
+            cityFields: [
+                ...lastMetaData.cityFields,
+                {
+                    fieldName: name,
+                    description: 'dummy description 1',
+                    unit,
+                    fieldType: 'number',
+                },
             ],
-        };
+        });
 
         return this;
     }
 
-    buildAllDataSets(): GroupField[] {
-        return this.groupFields;
+    buildCityDataFields(): GroupField[] {
+        return this.cityDataSets;
     }
 
-    buildMetaData(): DataSetMetaData[] {
-        return this.metaData;
+    buildMetaData(): CityMetaDataSet[] {
+        return this.cityMetaDataSets;
     }
 }

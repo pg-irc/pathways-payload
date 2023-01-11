@@ -1,7 +1,7 @@
 import { CollectionConfig } from 'payload/types';
 
-const GroupMetaData: CollectionConfig = {
-    slug: 'group-meta-data',
+const CityMetaData: CollectionConfig = {
+    slug: 'city-meta-data',
     admin: {
         defaultColumns: ['id', 'fields', 'description'],
         useAsTitle: 'id',
@@ -16,14 +16,14 @@ const GroupMetaData: CollectionConfig = {
         { name: 'id', type: 'text', unique: true, localized: false },
         { name: 'description', type: 'text', localized: true },
         {
-            name: 'field-meta-data',
+            name: 'cityFields',// TODO rename to cityFields
             type: 'array',
             fields: [
-                { name: 'name', type: 'text', localized: false },
-                { name: 'type', type: 'text' }, // can only be one of the strings 'number' or 'text'
+                { name: 'fieldName', type: 'text', localized: false },
+                { name: 'fieldType', type: 'text', localized: false }, // can only be one of the strings 'number' or 'text'
                 { name: 'description', type: 'text', localized: true },
                 {
-                    name: 'unit',
+                    name: 'unit', // unit can only exist on 'number' fields
                     type: 'select',
                     options: [
                         'persons',
@@ -40,12 +40,12 @@ const GroupMetaData: CollectionConfig = {
             admin: {
                 components: {
                     RowLabel: ({ data, path, index }) =>
-                        data?.name ||
-                        `Field Meta Data ${String(index).padStart(2, '0')}`,
+                        data?.fieldName ||
+                        `City meta data ${String(index).padStart(2, '0')}`,
                 },
             },
         },
     ],
 };
 
-export default GroupMetaData;
+export default CityMetaData;

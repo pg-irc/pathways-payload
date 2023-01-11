@@ -1,11 +1,11 @@
 import { CollectionConfig, FieldHook, Field } from 'payload/types';
-import { allTheFields as cccFields } from '../data/ccc_fields';
+import { cityDataFields } from '../data/ccc_fields';
 
 const Cities: CollectionConfig = {
     slug: 'cities',
     admin: {
-        defaultColumns: ['name', 'updatedAt'],
-        useAsTitle: 'name',
+        defaultColumns: ['cityName'],
+        useAsTitle: 'cityName',
     },
     access: {
         create: () => true,
@@ -15,7 +15,7 @@ const Cities: CollectionConfig = {
     },
     fields: [
         {
-            name: 'name',
+            name: 'cityName',
             type: 'text',
             localized: true,
         },
@@ -28,9 +28,9 @@ const Cities: CollectionConfig = {
             required: true,
         },
         {
-            name: 'comparable-data',
+            name: 'city-data',
             type: 'group',
-            fields: cccFields,
+            fields: cityDataFields,
         },
     ],
 };

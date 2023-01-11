@@ -1,4 +1,5 @@
 import { CollectionConfig } from 'payload/types';
+import { handleQuestionRequest } from '../api/questions';
 
 const Questions: CollectionConfig = {
     slug: 'questions',
@@ -7,7 +8,6 @@ const Questions: CollectionConfig = {
             'questionText',
             'displayOrder',
             'answers',
-            'updatedAt',
         ],
         useAsTitle: 'questionText',
     },
@@ -60,7 +60,7 @@ const Questions: CollectionConfig = {
             ],
             admin: {
                 components: {
-                    RowLabel: ({ data, path, index}) =>
+                    RowLabel: ({ data, path, index }) =>
                         data?.answerText ||
                         `Answer ${String(index).padStart(2, '0')}`,
                 },
@@ -72,36 +72,9 @@ const Questions: CollectionConfig = {
             // access with http://localhost:3000/api/questions/for-province/63a9d4d84977177c6ba6541e
             path: '/for-province/:province',
             method: 'get',
-            handler: async (req, res, _next) => {
-                const questions = await getQuestionsForProvince(
-                    req,
-                    req.params.province
-                );
-                if (questions) {
-                    res.status(200).send({ questions });
-                } else {
-                    res.status(404).send({ error: 'not found' });
-                }
-            },
+            handler: handleQuestionRequest,
         },
     ],
-};
-
-const provincesIsEmpty = () => ({ provinces: { equals: [] } });
-
-const provincesContainsId = (id) => ({ provinces: { in: id } });
-
-const appliesToProvince = (id) => ({
-    or: [provincesIsEmpty(), provincesContainsId(id)],
-});
-
-const getQuestionsForProvince = async (req, provinceId) => {
-    const cms = req.payload;
-    const found = await cms.find({
-        collection: 'questions',
-        where: appliesToProvince(provinceId),
-    });
-    return found;
 };
 
 export default Questions;
