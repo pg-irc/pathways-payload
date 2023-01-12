@@ -27,6 +27,15 @@ describe('extract POT data', () => {
                         name: 'bar',
                         type: 'number',
                     },
+                    {
+                        name: 'baz',
+                        type: 'text'
+                    },
+                    {
+                        name: 'bazzo',
+                        type: 'text',
+                        localized: false,
+                    }
                 ],
             };
             const fields = findLocalizedFields(configuration);
