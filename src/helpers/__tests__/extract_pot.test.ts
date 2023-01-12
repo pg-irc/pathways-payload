@@ -1,3 +1,6 @@
+// questions
+// can non-text fields be localized?
+
 import { CollectionConfig, Field, TextField } from 'payload/types';
 import * as R from 'ramda';
 
@@ -42,6 +45,29 @@ describe('extract POT data', () => {
             };
             const fields = findLocalizedFields(configuration);
             expect(fields).toEqual(['bar']);
+        });
+        it('returns names of multiple localized string fields', () => {
+            const configuration: CollectionConfig = {
+                slug: 'foo',
+                fields: [
+                    {
+                        name: 'bar',
+                        type: 'text',
+                        localized: true,
+                    },
+                    {
+                        name: 'baz',
+                        type: 'text',
+                        localized: true,
+                    },
+                    {
+                        name: 'bazzo',
+                        type: 'number'
+                    }
+                ],
+            };
+            const fields = findLocalizedFields(configuration);
+            expect(fields).toEqual(['bar', 'baz']);
         });
     });
 });
