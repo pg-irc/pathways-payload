@@ -1,15 +1,25 @@
 // questions
 // can non-text fields be localized?
 
-import { CollectionConfig, Field, TextField } from 'payload/types';
+import { CollectionConfig, Field, TextField, ArrayField } from 'payload/types';
 import * as R from 'ramda';
 
-const findLocalizedFields = (configuration: CollectionConfig) => {
-    const isLocalizedText = (field: Field) => field.type === 'text' && field.localized;
-    const localizedFields = R.filter(isLocalizedText, configuration.fields);
-    const results = [];
+const findLocalizedFields = (configuration: CollectionConfig) =>
+    findRecursively(configuration.fields);
+
+const findRecursively = (fields: Field[]): string[] => {
+    const isLocalizedText = (field: Field) =>
+        field.type === 'text' && field.localized;
+    const localizedFields = R.filter(isLocalizedText, fields);
+    let results = [];
     localizedFields.forEach((field: TextField) => {
-        results.push(field.name);
+        results = [...results, field.name];
+    });
+    const isArray = (field: Field): boolean => field.type === 'array';
+    const arrayFields = R.filter(isArray, fields);
+    arrayFields.forEach((field: ArrayField) => {
+        const found = findRecursively(field.fields);
+        results = [...results, ...found];
     });
     return results;
 };
@@ -75,7 +85,7 @@ describe('extract POT data', () => {
             const fields = findLocalizedFields(configuration);
             expect(fields).toEqual(['bar', 'baz']);
         });
-        describe('configuration with array field', () => {
+        describe('configuration with nested fields', () => {
             it('extracts name of localized field in array', () => {
                 const configuration: CollectionConfig = {
                     slug: 'foo',
@@ -94,7 +104,7 @@ describe('extract POT data', () => {
                     ],
                 };
                 const fields = findLocalizedFields(configuration);
-                expect(fields).toEqual([['bar', 'baz']]);
+                expect(fields).toEqual(['baz']);
             });
         });
     });
