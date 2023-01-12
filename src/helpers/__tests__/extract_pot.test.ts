@@ -33,7 +33,7 @@ const findRecursively = (path: string[], fields: Field[]): string[][] => {
     return results;
 };
 
-const getLocalizedFields = (fields: string[], object: any) => { 
+const getLocalizedFields = (fields: string[], object: any) => {
     return R.path(fields, object);
 };
 
@@ -156,7 +156,7 @@ describe('extract POT data', () => {
                                     name: 'bazzo',
                                     type: 'text',
                                     localized: true,
-                                }
+                                },
                             ],
                         },
                     ],
@@ -169,13 +169,22 @@ describe('extract POT data', () => {
             });
         });
     });
-    describe ('pull localized values from objects', () => {
+    describe('pull localized values from objects', () => {
         it('pulls a value from simple object', () => {
             const object = {
-                bar: 'baz'
+                firstField: 'firstValue',
             };
-            const result = getLocalizedFields(['bar'], object);
-            expect(result).toEqual('baz');
+            const result = getLocalizedFields(['firstField'], object);
+            expect(result).toEqual('firstValue');
+        });
+        it('pulls value from a nested field', () => {
+            const object = {
+                firstField: {
+                    secondField: 'firstValue',
+                },
+            };
+            const result = getLocalizedFields(['firstField', 'secondField'], object);
+            expect(result).toEqual('firstValue');
         });
     });
 });
