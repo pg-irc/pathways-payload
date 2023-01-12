@@ -1,7 +1,7 @@
 // questions
 // can non-text fields be localized?
 
-import { CollectionConfig, Field, TextField, ArrayField } from 'payload/types';
+import { CollectionConfig, Field, TextField } from 'payload/types';
 import * as R from 'ramda';
 
 const findLocalizedFields = (configuration: CollectionConfig) =>
@@ -16,18 +16,25 @@ const findRecursively = (path: string[], fields: Field[]): string[][] => {
         results = [...results, [...path, field.name]];
     });
 
-    interface HasFields {
+    interface NestedField {
         name: string;
         fields: Field[];
     }
 
-    const hasFields = (field: Field): boolean => R.has('fields', field);
-    const nestedFields: HasFields[] = R.filter(hasFields, fields);
+    const isNested = (field: Field): boolean => R.has('fields', field);
+    const nestedFields: NestedField[] = R.filter(isNested, fields);
     nestedFields.forEach((nestedField) => {
-        const found = findRecursively([...path, nestedField.name], nestedField.fields);
+        const found = findRecursively(
+            [...path, nestedField.name],
+            nestedField.fields
+        );
         results = [...results, ...found];
     });
     return results;
+};
+
+const getLocalizedFields = (fields: string[], object: any) => { 
+    return R.path(fields, object);
 };
 
 describe('extract POT data', () => {
@@ -92,7 +99,7 @@ describe('extract POT data', () => {
             expect(fields).toEqual([['bar'], ['baz']]);
         });
         describe('configuration with nested fields', () => {
-            it('extracts name of localized field in array', () => {
+            it('extracts name with path of localized field in array', () => {
                 const configuration: CollectionConfig = {
                     slug: 'foo',
                     fields: [
@@ -132,6 +139,43 @@ describe('extract POT data', () => {
                 const fields = findLocalizedFields(configuration);
                 expect(fields).toEqual([['bar', 'baz']]);
             });
+            it('extracts name with path for multiple fields inside array', () => {
+                const configuration: CollectionConfig = {
+                    slug: 'foo',
+                    fields: [
+                        {
+                            name: 'bar',
+                            type: 'array',
+                            fields: [
+                                {
+                                    name: 'baz',
+                                    type: 'text',
+                                    localized: true,
+                                },
+                                {
+                                    name: 'bazzo',
+                                    type: 'text',
+                                    localized: true,
+                                }
+                            ],
+                        },
+                    ],
+                };
+                const fields = findLocalizedFields(configuration);
+                expect(fields).toEqual([
+                    ['bar', 'baz'],
+                    ['bar', 'bazzo'],
+                ]);
+            });
+        });
+    });
+    describe ('pull localized values from objects', () => {
+        it('pulls a value from simple object', () => {
+            const object = {
+                bar: 'baz'
+            };
+            const result = getLocalizedFields(['bar'], object);
+            expect(result).toEqual('baz');
         });
     });
 });
