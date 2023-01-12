@@ -33,8 +33,12 @@ const findRecursively = (path: string[], fields: Field[]): string[][] => {
     return results;
 };
 
-const getLocalizedFields = (fields: string[], object: any) => {
-    return R.path(fields, object);
+const getLocalizedFields = (paths: string[][], object: any) => {
+    let result = [];
+    paths.forEach((path: string[]) => {
+        result = [...result, R.path(path, object)];
+    });
+    return result;
 };
 
 describe('extract POT data', () => {
@@ -174,8 +178,8 @@ describe('extract POT data', () => {
             const object = {
                 firstField: 'firstValue',
             };
-            const result = getLocalizedFields(['firstField'], object);
-            expect(result).toEqual('firstValue');
+            const result = getLocalizedFields([['firstField']], object);
+            expect(result).toEqual(['firstValue']);
         });
         it('pulls value from a nested field', () => {
             const object = {
@@ -183,8 +187,22 @@ describe('extract POT data', () => {
                     secondField: 'firstValue',
                 },
             };
-            const result = getLocalizedFields(['firstField', 'secondField'], object);
-            expect(result).toEqual('firstValue');
+            const result = getLocalizedFields(
+                [['firstField', 'secondField']],
+                object
+            );
+            expect(result).toEqual(['firstValue']);
+        });
+        it('pulls multiple values from simple object', () => {
+            const object = {
+                firstField: 'firstValue',
+                secondField: 'secondValue',
+            };
+            const result = getLocalizedFields(
+                [['firstField'], ['secondField']],
+                object
+            );
+            expect(result).toEqual(['firstValue', 'secondValue']);
         });
     });
 });
