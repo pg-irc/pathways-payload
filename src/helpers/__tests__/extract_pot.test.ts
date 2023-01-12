@@ -33,12 +33,20 @@ const findRecursively = (path: string[], fields: Field[]): string[][] => {
     return results;
 };
 
-const getLocalizedFields = (paths: string[][], object: any) => {
+const getLocalizedValues = (paths: string[][], object: any) => {
     let result = [];
     paths.forEach((path: string[]) => {
-        result = [...result, R.path(path, object)];
+        const r = getLocalizedValueRecursive(path, object);
+        result = [...result, r];
     });
     return result;
+};
+
+const getLocalizedValueRecursive = (path: string[], object: any) => { 
+    if (path.length === 1) {
+        return object[path[0]];
+    }
+    return getLocalizedValueRecursive(R.drop(1, path), object[path[0]]);
 };
 
 describe('extract POT data', () => {
@@ -178,7 +186,7 @@ describe('extract POT data', () => {
             const object = {
                 firstField: 'firstValue',
             };
-            const result = getLocalizedFields([['firstField']], object);
+            const result = getLocalizedValues([['firstField']], object);
             expect(result).toEqual(['firstValue']);
         });
         it('pulls value from a nested field', () => {
@@ -187,7 +195,7 @@ describe('extract POT data', () => {
                     secondField: 'firstValue',
                 },
             };
-            const result = getLocalizedFields(
+            const result = getLocalizedValues(
                 [['firstField', 'secondField']],
                 object
             );
@@ -198,7 +206,7 @@ describe('extract POT data', () => {
                 firstField: 'firstValue',
                 secondField: 'secondValue',
             };
-            const result = getLocalizedFields(
+            const result = getLocalizedValues(
                 [['firstField'], ['secondField']],
                 object
             );
