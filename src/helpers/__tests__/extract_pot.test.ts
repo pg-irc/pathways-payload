@@ -5,11 +5,8 @@ import { CollectionConfig, Field, TextField } from 'payload/types';
 import * as R from 'ramda';
 
 const findLocalizedFields = (configuration: CollectionConfig) => {
-    const fields = configuration.fields;
-    const localizedFields = R.filter(
-        (field: Field) => field.type === 'text' && field.localized,
-        fields
-    );
+    const isLocalizedText = (field: Field) => field.type === 'text' && field.localized;
+    const localizedFields = R.filter(isLocalizedText, configuration.fields);
     const results = [];
     localizedFields.forEach((field: TextField) => {
         results.push(field.name);
@@ -29,13 +26,13 @@ describe('extract POT data', () => {
                     },
                     {
                         name: 'baz',
-                        type: 'text'
+                        type: 'text',
                     },
                     {
                         name: 'bazzo',
                         type: 'text',
                         localized: false,
-                    }
+                    },
                 ],
             };
             const fields = findLocalizedFields(configuration);
@@ -71,12 +68,34 @@ describe('extract POT data', () => {
                     },
                     {
                         name: 'bazzo',
-                        type: 'number'
-                    }
+                        type: 'number',
+                    },
                 ],
             };
             const fields = findLocalizedFields(configuration);
             expect(fields).toEqual(['bar', 'baz']);
+        });
+        describe('configuration with array field', () => {
+            it('extracts name of localized field in array', () => {
+                const configuration: CollectionConfig = {
+                    slug: 'foo',
+                    fields: [
+                        {
+                            name: 'bar',
+                            type: 'array',
+                            fields: [
+                                {
+                                    name: 'baz',
+                                    type: 'text',
+                                    localized: true,
+                                },
+                            ],
+                        },
+                    ],
+                };
+                const fields = findLocalizedFields(configuration);
+                expect(fields).toEqual([['bar', 'baz']]);
+            });
         });
     });
 });
