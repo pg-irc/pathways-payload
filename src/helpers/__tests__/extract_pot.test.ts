@@ -280,4 +280,26 @@ describe('extract POT data', () => {
             expect(result).toEqual([undefined]);
         });
     });
+    describe('write localized values to POT file', () => {
+        it('formats a couple of values', () => {
+            const data = ['first value', 'second value'];
+            const expectedData =
+                'msgid "first value"\n' +
+                'msgstr ""\n' +
+                '\n' +
+                'msgid "second value"\n' +
+                'msgstr ""\n' +
+                '\n';
+            const formattedData = formatPoData(data);
+            expect(formattedData).toEqual(expectedData);
+        });
+    });
 });
+
+const formatPoData = (data: string[]): string =>
+    R.reduce(
+        (acc: string, item: string): string =>
+            acc + `msgid "${item}"\n` + 'msgstr ""\n' + '\n',
+        '',
+        data
+    );
