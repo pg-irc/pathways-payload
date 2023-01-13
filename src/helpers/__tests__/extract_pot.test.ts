@@ -39,7 +39,7 @@ const getLocalizedValues = (paths: string[][], object: any): string[] => {
         const r = recurse(path, object);
         console.log('H9 got ' + JSON.stringify(r));
         result = R.flatten(R.append(r, result));
-        console.log('H99 resulted in ' + JSON.stringify(result));   
+        console.log('H99 resulted in ' + JSON.stringify(result));
     });
     return result;
 };
@@ -48,22 +48,17 @@ const recurse = (path: string[], object: any): string[] => {
     if (R.isEmpty(path)) {
         return [];
     }
-    console.log('H1 ' + path[0]);
     if (R.is(Array, object[path[0]])) {
-        console.log('H2 its an array! ' + path[0]);
         let result = [];
         R.forEach((element: any) => {
-            console.log('H3 iterating ' + JSON.stringify(element));
             const resultFromElement = recurse(R.drop(1, path), element);
             result = [...result, resultFromElement];
         }, object[path[0]]);
         return result;
     }
     if (path.length === 1) {
-        console.log('H4 returning ' + object[path[0]]);
         return object[path[0]];
     }
-    console.log('H5');
     return recurse(R.drop(1, path), object[path[0]]);
 };
 
@@ -207,6 +202,13 @@ describe('extract POT data', () => {
             const result = getLocalizedValues([['firstField']], object);
             expect(result).toEqual(['firstValue']);
         });
+        it('handles empty path array', () => {
+            const object = {
+                firstField: 'firstValue',
+            };
+            expect(getLocalizedValues([], object)).toEqual([]);
+            expect(getLocalizedValues([[]], object)).toEqual([]);
+        });
         it('pulls value from a nested field', () => {
             const object = {
                 firstField: {
@@ -243,7 +245,6 @@ describe('extract POT data', () => {
                     },
                 ],
             };
-            console.log('H0 failing test')
             const result = getLocalizedValues(
                 [['firstField', 'thirdField']],
                 object
