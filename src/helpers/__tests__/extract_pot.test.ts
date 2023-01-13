@@ -33,20 +33,38 @@ const findRecursively = (path: string[], fields: Field[]): string[][] => {
     return results;
 };
 
-const getLocalizedValues = (paths: string[][], object: any) => {
+const getLocalizedValues = (paths: string[][], object: any): string[] => {
     let result = [];
     paths.forEach((path: string[]) => {
-        const r = getLocalizedValueRecursive(path, object);
-        result = [...result, r];
+        const r = recurse(path, object);
+        console.log('H9 got ' + JSON.stringify(r));
+        result = R.flatten(R.append(r, result));
+        console.log('H99 resulted in ' + JSON.stringify(result));   
     });
     return result;
 };
 
-const getLocalizedValueRecursive = (path: string[], object: any) => { 
+const recurse = (path: string[], object: any): string[] => {
+    if (R.isEmpty(path)) {
+        return [];
+    }
+    console.log('H1 ' + path[0]);
+    if (R.is(Array, object[path[0]])) {
+        console.log('H2 its an array! ' + path[0]);
+        let result = [];
+        R.forEach((element: any) => {
+            console.log('H3 iterating ' + JSON.stringify(element));
+            const resultFromElement = recurse(R.drop(1, path), element);
+            result = [...result, resultFromElement];
+        }, object[path[0]]);
+        return result;
+    }
     if (path.length === 1) {
+        console.log('H4 returning ' + object[path[0]]);
         return object[path[0]];
     }
-    return getLocalizedValueRecursive(R.drop(1, path), object[path[0]]);
+    console.log('H5');
+    return recurse(R.drop(1, path), object[path[0]]);
 };
 
 describe('extract POT data', () => {
@@ -208,6 +226,26 @@ describe('extract POT data', () => {
             };
             const result = getLocalizedValues(
                 [['firstField'], ['secondField']],
+                object
+            );
+            expect(result).toEqual(['firstValue', 'secondValue']);
+        });
+        it('pulls values from an array', () => {
+            const object = {
+                firstField: [
+                    {
+                        secondField: 3,
+                        thirdField: 'firstValue',
+                    },
+                    {
+                        secondField: 4,
+                        thirdField: 'secondValue',
+                    },
+                ],
+            };
+            console.log('H0 failing test')
+            const result = getLocalizedValues(
+                [['firstField', 'thirdField']],
                 object
             );
             expect(result).toEqual(['firstValue', 'secondValue']);
