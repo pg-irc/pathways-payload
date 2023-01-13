@@ -10,7 +10,7 @@ const getLocalizedFields = (configuration: CollectionConfig) =>
 const isLocalizedText = (field: Field): boolean =>
     field.type === 'text' && field.localized;
 
-const isNestedField = (field: Field): boolean => R.has('fields', field);
+const isNested = (field: Field): boolean => R.has('fields', field);
 
 interface NestedField {
     name: string;
@@ -21,26 +21,22 @@ const getLocalizedFieldsRecursively = (
     path: string[],
     fields: Field[]
 ): string[][] => {
-    const localizedFields = R.filter(isLocalizedText, fields);
-    const results = R.reduce(
-        (acc: string[][], field: TextField) => {
-            return [...acc, [...path, field.name]];
-        },
-        [],
-        localizedFields
-    ); 
+    const reduceLocalizedField = (acc: string[][], textField: TextField) => [
+        ...acc,
+        [...path, textField.name],
+    ];
 
-    const nestedFields: NestedField[] = R.filter(isNestedField, fields);
-    return R.reduce(
-        (acc: string[][], nestedField: NestedField) => {
-            const p = [...path, nestedField.name];
-            const f = nestedField.fields;
-            const r = getLocalizedFieldsRecursively(p, f);
-            return [...acc, ...r];
-        },
-        results,
-        nestedFields
-    ); 
+    const localizedFields = R.filter(isLocalizedText, fields);
+    const results = R.reduce(reduceLocalizedField, [], localizedFields);
+
+    const reduceNestedField = (acc: string[][], nestedField: NestedField) => {
+        const p = [...path, nestedField.name];
+        const f = nestedField.fields;
+        return [...acc, ...getLocalizedFieldsRecursively(p, f)];
+    };
+
+    const nestedFields: NestedField[] = R.filter(isNested, fields);
+    return R.reduce(reduceNestedField, results, nestedFields);
 };
 
 const getLocalizedValues = (paths: string[][], object: any): string[] => {
