@@ -7,28 +7,33 @@ import * as R from 'ramda';
 const getLocalizedFields = (configuration: CollectionConfig) =>
     getLocalizedFieldsRecursively([], configuration.fields);
 
-const getLocalizedFieldsRecursively = (path: string[], fields: Field[]): string[][] => {
-    const isLocalizedText = (field: Field) =>
-        field.type === 'text' && field.localized;
+const isLocalizedText = (field: Field): boolean =>
+    field.type === 'text' && field.localized;
+
+const isNestedField = (field: Field): boolean => R.has('fields', field);
+
+interface NestedField {
+    name: string;
+    fields: Field[];
+}
+
+const getLocalizedFieldsRecursively = (
+    path: string[],
+    fields: Field[]
+): string[][] => {
     const localizedFields = R.filter(isLocalizedText, fields);
     let results = [];
     localizedFields.forEach((field: TextField) => {
-        results = [...results, [...path, field.name]];
+        const r = [...path, field.name];
+        results = [...results, r];
     });
 
-    interface NestedField {
-        name: string;
-        fields: Field[];
-    }
-
-    const isNested = (field: Field): boolean => R.has('fields', field);
-    const nestedFields: NestedField[] = R.filter(isNested, fields);
+    const nestedFields: NestedField[] = R.filter(isNestedField, fields);
     nestedFields.forEach((nestedField) => {
-        const found = getLocalizedFieldsRecursively(
-            [...path, nestedField.name],
-            nestedField.fields
-        );
-        results = [...results, ...found];
+        const p = [...path, nestedField.name];
+        const f = nestedField.fields;
+        const r = getLocalizedFieldsRecursively(p, f);
+        results = [...results, ...r];
     });
     return results;
 };
@@ -42,20 +47,23 @@ const getLocalizedValues = (paths: string[][], object: any): string[] => {
     return result;
 };
 
-const getLocalizedValuesRecursively = (path: string[], object: any): string[] => {
+const getLocalizedValuesRecursively = (
+    path: string[],
+    object: any
+): string[] => {
     if (R.isEmpty(path)) {
         return [];
     }
     if (R.is(Array, object[path[0]])) {
         let result = [];
-        R.forEach((element: any) => {
-            const resultFromElement = getLocalizedValuesRecursively(R.drop(1, path), element);
-            result = [...result, resultFromElement];
-        }, object[path[0]]);
+        object[path[0]].forEach((element: any) => {
+            const r = getLocalizedValuesRecursively(R.drop(1, path), element);
+            result = [...result, r];
+        });
         return result;
     }
     if (path.length === 1) {
-        return object[path[0]];
+        return R.is(String, object[path[0]]) ? object[path[0]] : undefined;
     }
     return getLocalizedValuesRecursively(R.drop(1, path), object[path[0]]);
 };
@@ -248,6 +256,27 @@ describe('extract POT data', () => {
                 object
             );
             expect(result).toEqual(['firstValue', 'secondValue']);
+        });
+        it('handles error where the path array is too short', () => {
+            const object = {
+                firstField: {
+                    secondField: 'firstValue',
+                },
+            };
+            const result = getLocalizedValues([['firstField']], object);
+            expect(result).toEqual([undefined]);
+        });
+        it('handles error where the path array is too long', () => {
+            const object = {
+                firstField: {
+                    secondField: 'firstValue',
+                },
+            };
+            const result = getLocalizedValues(
+                [['firstField', 'secondField', 'thirdField']],
+                object
+            );
+            expect(result).toEqual([undefined]);
         });
     });
 });
