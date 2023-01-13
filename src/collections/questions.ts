@@ -19,6 +19,11 @@ const Questions: CollectionConfig = {
     },
     fields: [
         {
+            name: 'id',
+            type: 'text',
+            unique: true,
+        },
+        {
             name: 'questionText',
             type: 'text',
             localized: true,
@@ -38,6 +43,11 @@ const Questions: CollectionConfig = {
             name: 'answers',
             type: 'array',
             fields: [
+                {
+                    name: 'id',
+                    type: 'text',
+                    unique: true,
+                },
                 {
                     name: 'answerText',
                     type: 'text',

@@ -19,7 +19,7 @@ const createSystemData = async () => {
             data: provinces[i],
         });
     }
-    
+
     for (let i = 0; i < allTheMetaData.length; i++) {
         await payload.create({
             collection: 'city-meta-data',
@@ -37,6 +37,31 @@ const createSystemData = async () => {
         locale: 'es',
         id: 'BC',
         data: { provinceName: 'Columbia Británica' },
+    });
+    await payload.create({
+        collection: 'questions',
+        data: {
+            id: 'q1',
+            questionText: 'The question in English',
+            answers: [
+                { id: 'a1', answerText: 'First answer in English' },
+                { id: 'a2', answerText: 'Second answer in English' },
+                { id: 'a3', answerText: 'Third answer in English' },
+            ],
+        },
+    });
+    await payload.update({
+        collection: 'questions',
+        locale: 'de',
+        id: 'q1',
+        data: {
+            questionText: 'The question in German',
+            answers: [
+                { id: 'a1', answerText: 'First answer in German' },
+                { id: 'a2', answerText: 'Second answer in German' },
+                { id: 'a3', answerText: 'Third answer in German' },
+            ],
+        },
     });
 
     console.log('Seed completed!');
