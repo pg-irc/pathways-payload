@@ -4,10 +4,10 @@
 import { CollectionConfig, Field, TextField } from 'payload/types';
 import * as R from 'ramda';
 
-const findLocalizedFields = (configuration: CollectionConfig) =>
-    findRecursively([], configuration.fields);
+const getLocalizedFields = (configuration: CollectionConfig) =>
+    getLocalizedFieldsRecursively([], configuration.fields);
 
-const findRecursively = (path: string[], fields: Field[]): string[][] => {
+const getLocalizedFieldsRecursively = (path: string[], fields: Field[]): string[][] => {
     const isLocalizedText = (field: Field) =>
         field.type === 'text' && field.localized;
     const localizedFields = R.filter(isLocalizedText, fields);
@@ -24,7 +24,7 @@ const findRecursively = (path: string[], fields: Field[]): string[][] => {
     const isNested = (field: Field): boolean => R.has('fields', field);
     const nestedFields: NestedField[] = R.filter(isNested, fields);
     nestedFields.forEach((nestedField) => {
-        const found = findRecursively(
+        const found = getLocalizedFieldsRecursively(
             [...path, nestedField.name],
             nestedField.fields
         );
@@ -36,22 +36,20 @@ const findRecursively = (path: string[], fields: Field[]): string[][] => {
 const getLocalizedValues = (paths: string[][], object: any): string[] => {
     let result = [];
     paths.forEach((path: string[]) => {
-        const r = recurse(path, object);
-        console.log('H9 got ' + JSON.stringify(r));
+        const r = getLocalizedValuesRecursively(path, object);
         result = R.flatten(R.append(r, result));
-        console.log('H99 resulted in ' + JSON.stringify(result));
     });
     return result;
 };
 
-const recurse = (path: string[], object: any): string[] => {
+const getLocalizedValuesRecursively = (path: string[], object: any): string[] => {
     if (R.isEmpty(path)) {
         return [];
     }
     if (R.is(Array, object[path[0]])) {
         let result = [];
         R.forEach((element: any) => {
-            const resultFromElement = recurse(R.drop(1, path), element);
+            const resultFromElement = getLocalizedValuesRecursively(R.drop(1, path), element);
             result = [...result, resultFromElement];
         }, object[path[0]]);
         return result;
@@ -59,7 +57,7 @@ const recurse = (path: string[], object: any): string[] => {
     if (path.length === 1) {
         return object[path[0]];
     }
-    return recurse(R.drop(1, path), object[path[0]]);
+    return getLocalizedValuesRecursively(R.drop(1, path), object[path[0]]);
 };
 
 describe('extract POT data', () => {
@@ -83,7 +81,7 @@ describe('extract POT data', () => {
                     },
                 ],
             };
-            const fields = findLocalizedFields(configuration);
+            const fields = getLocalizedFields(configuration);
             expect(fields).toEqual([]);
         });
         it('returns name of localized string', () => {
@@ -97,7 +95,7 @@ describe('extract POT data', () => {
                     },
                 ],
             };
-            const fields = findLocalizedFields(configuration);
+            const fields = getLocalizedFields(configuration);
             expect(fields).toEqual([['bar']]);
         });
         it('returns names of multiple localized string fields', () => {
@@ -120,7 +118,7 @@ describe('extract POT data', () => {
                     },
                 ],
             };
-            const fields = findLocalizedFields(configuration);
+            const fields = getLocalizedFields(configuration);
             expect(fields).toEqual([['bar'], ['baz']]);
         });
         describe('configuration with nested fields', () => {
@@ -141,7 +139,7 @@ describe('extract POT data', () => {
                         },
                     ],
                 };
-                const fields = findLocalizedFields(configuration);
+                const fields = getLocalizedFields(configuration);
                 expect(fields).toEqual([['bar', 'baz']]);
             });
             it('extracts name of field inside a group', () => {
@@ -161,7 +159,7 @@ describe('extract POT data', () => {
                         },
                     ],
                 };
-                const fields = findLocalizedFields(configuration);
+                const fields = getLocalizedFields(configuration);
                 expect(fields).toEqual([['bar', 'baz']]);
             });
             it('extracts name with path for multiple fields inside array', () => {
@@ -186,7 +184,7 @@ describe('extract POT data', () => {
                         },
                     ],
                 };
-                const fields = findLocalizedFields(configuration);
+                const fields = getLocalizedFields(configuration);
                 expect(fields).toEqual([
                     ['bar', 'baz'],
                     ['bar', 'bazzo'],
