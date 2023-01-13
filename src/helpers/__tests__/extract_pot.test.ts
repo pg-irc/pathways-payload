@@ -22,20 +22,25 @@ const getLocalizedFieldsRecursively = (
     fields: Field[]
 ): string[][] => {
     const localizedFields = R.filter(isLocalizedText, fields);
-    let results = [];
-    localizedFields.forEach((field: TextField) => {
-        const r = [...path, field.name];
-        results = [...results, r];
-    });
+    const results = R.reduce(
+        (acc: string[][], field: TextField) => {
+            return [...acc, [...path, field.name]];
+        },
+        [],
+        localizedFields
+    ); 
 
     const nestedFields: NestedField[] = R.filter(isNestedField, fields);
-    nestedFields.forEach((nestedField) => {
-        const p = [...path, nestedField.name];
-        const f = nestedField.fields;
-        const r = getLocalizedFieldsRecursively(p, f);
-        results = [...results, ...r];
-    });
-    return results;
+    return R.reduce(
+        (acc: string[][], nestedField: NestedField) => {
+            const p = [...path, nestedField.name];
+            const f = nestedField.fields;
+            const r = getLocalizedFieldsRecursively(p, f);
+            return [...acc, ...r];
+        },
+        results,
+        nestedFields
+    ); 
 };
 
 const getLocalizedValues = (paths: string[][], object: any): string[] => {
