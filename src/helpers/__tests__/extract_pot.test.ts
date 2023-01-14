@@ -317,6 +317,31 @@ describe('extract POT data', () => {
 
             expect(result).toEqual({ id: '123', firstField: 'premierValeur' });
         });
+        it('handles object with two localized fields', () => {
+            const configuration: CollectionConfig = {
+                slug: 'foo',
+                fields: [
+                    { name: 'id', type: 'text' },
+                    { name: 'firstField', type: 'text', localized: true },
+                    { name: 'secondField', type: 'text', localized: true },
+                ],
+            };
+            const object = {
+                id: '123',
+                firstField: 'firstValue',
+                secondField: 'secondValue',
+            };
+            const mockGetText = (value: string): string =>
+                value === 'firstValue' ? 'foersteVerdi' : 'andreVerdi';
+
+            const result = computeUpdate(mockGetText, configuration, object);
+
+            expect(result).toEqual({
+                id: '123',
+                firstField: 'foersteVerdi',
+                secondField: 'andreVerdi',
+            });
+        });
     });
 });
 
@@ -326,8 +351,12 @@ const computeUpdate = (
     object: any
 ) => {
     const fields = getLocalizedFields(configuration);
-    const fieldName = fields[0][0];
-    const oldValue = object[fieldName];
-    const newValue = getText(oldValue);
-    return { id: object['id'], [fieldName]: newValue };
+    let result = { id: object['id'] };
+    fields.forEach((path: string[]) => {
+        const fieldName = path[0];
+        const oldValue = object[fieldName];
+        const newValue = getText(oldValue);
+        result = { ...result, [fieldName]: newValue };
+    });
+    return result;
 };
