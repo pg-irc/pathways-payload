@@ -396,10 +396,15 @@ const computeUpdateRecursively = (
     path: string[],
     object: any
 ) => {
-    const fieldName = path[0];
-    const oldValue = object[fieldName];
-    const newValue = getText(oldValue);
-    return { [fieldName]: newValue };
+    if (path.length === 0) {
+        return undefined;
+    }
+    if (path.length === 1) {
+        const fieldName = path[0];
+        const oldValue = object[fieldName];
+        const newValue = getText(oldValue);
+        return { [fieldName]: newValue };
+    }
 };
 
 const computeUpdateDraft = (
