@@ -342,6 +342,38 @@ describe('extract POT data', () => {
                 secondField: 'andreVerdi',
             });
         });
+        it('handles object with nested fields', () => {
+            const configuration: CollectionConfig = {
+                slug: 'foo',
+                fields: [
+                    { name: 'id', type: 'text' },
+                    {
+                        name: 'firstField',
+                        type: 'array',
+                        fields: [
+                            { name: 'id', type: 'text' },
+                            {
+                                name: 'secondField',
+                                type: 'text',
+                                localized: true,
+                            },
+                        ],
+                    },
+                ],
+            };
+            const object = {
+                id: '123',
+                firstField: [{ id: '234', secondField: 'secondValue' }],
+            };
+            // TODO have mock throw on unexpected argument
+            const mockGetText = (value: string): string => 'andreVerdi';
+            const result = computeUpdate(mockGetText, configuration, object);
+
+            expect(result).toEqual({
+                id: '123',
+                firstField: [{ id: '234', secondField: 'andreVerdi' }],
+            });
+        });
     });
 });
 
@@ -350,13 +382,55 @@ const computeUpdate = (
     configuration: CollectionConfig,
     object: any
 ) => {
-    const fields = getLocalizedFields(configuration);
     let result = { id: object['id'] };
+    const fields = getLocalizedFields(configuration);
     fields.forEach((path: string[]) => {
-        const fieldName = path[0];
-        const oldValue = object[fieldName];
-        const newValue = getText(oldValue);
-        result = { ...result, [fieldName]: newValue };
+        const r = computeUpdateRecursively(getText, path, object);
+        result = { ...result, ...r };
     });
     return result;
+};
+
+const computeUpdateRecursively = (
+    getText: (v: string) => string,
+    path: string[],
+    object: any
+) => {
+    const fieldName = path[0];
+    const oldValue = object[fieldName];
+    const newValue = getText(oldValue);
+    return { [fieldName]: newValue };
+};
+
+const computeUpdateDraft = (
+    getText: (v: string) => string,
+    configuration: CollectionConfig,
+    object: any
+) => {
+    const fields = getLocalizedFields(configuration);
+    let result = {};
+    fields.forEach((path: string[]) => {
+        const r = computeUpdateRecursivelyDraft(getText, path, object);
+        result = { ...result, r };
+    });
+    return result;
+};
+
+const computeUpdateRecursivelyDraft = (
+    getText: (v: string) => string,
+    path: string[],
+    object: any
+): any => {
+    if (path.length === 0) {
+        return undefined;
+    }
+    if (path.length === 1) {
+        const oldValue = object[path[0]];
+        const newValue = getText(oldValue);
+        return { id: object['id'], [path[0]]: newValue };
+    }
+    const p = R.drop(1, path);
+    const o = object[path[0]];
+    const r = computeUpdateRecursivelyDraft(getText, p, o);
+    return r; // TODO needs to put path[0] in front of each element?
 };
