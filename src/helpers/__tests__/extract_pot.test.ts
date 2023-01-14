@@ -69,6 +69,13 @@ const getLocalizedValuesRecursively = (
     return getLocalizedValuesRecursively(R.drop(1, path), object[path[0]]);
 };
 
+const formatPoData = (data: string[]): string =>
+    R.reduce(
+        (acc: string, item: string) => `${acc}msgid "${item}"\nmsgstr ""\n\n`,
+        '',
+        data
+    );
+
 describe('extract POT data', () => {
     describe('find localized fields', () => {
         it('returns nothing for a collection with no localized fields', () => {
@@ -294,12 +301,33 @@ describe('extract POT data', () => {
             expect(formattedData).toEqual(expectedData);
         });
     });
+    describe('updates localized fiels from gettext call', () => {
+        it('handles a simple case', () => {
+            const configuration: CollectionConfig = {
+                slug: 'foo',
+                fields: [
+                    { name: 'id', type: 'text' },
+                    { name: 'firstField', type: 'text', localized: true },
+                ],
+            };
+            const object = { id: '123', firstField: 'firstValue' };
+            const mockGetText = (value: string): string => 'premierValeur';
+
+            const result = computeUpdate(mockGetText, configuration, object);
+
+            expect(result).toEqual({ id: '123', firstField: 'premierValeur' });
+        });
+    });
 });
 
-const formatPoData = (data: string[]): string =>
-    R.reduce(
-        (acc: string, item: string): string =>
-            acc + `msgid "${item}"\n` + 'msgstr ""\n' + '\n',
-        '',
-        data
-    );
+const computeUpdate = (
+    getText: (v: string) => string,
+    configuration: CollectionConfig,
+    object: any
+) => {
+    const fields = getLocalizedFields(configuration);
+    const fieldName = fields[0][0];
+    const oldValue = object[fieldName];
+    const newValue = getText(oldValue);
+    return { id: object['id'], [fieldName]: newValue };
+};
