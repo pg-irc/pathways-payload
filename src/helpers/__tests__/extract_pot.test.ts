@@ -100,7 +100,7 @@ describe('extract POT data', () => {
             const fields = getLocalizedFields(configuration);
             expect(fields).toEqual([]);
         });
-        it('returns name of localized string', () => {
+        it('returns name of localized field', () => {
             const configuration: CollectionConfig = {
                 slug: 'foo',
                 fields: [
@@ -367,7 +367,10 @@ describe('extract POT data', () => {
             };
             // TODO have mock throw on unexpected argument
             const mockGetText = (value: string): string => 'andreVerdi';
+            console.log('Relevant test start here');
             const result = computeUpdate(mockGetText, configuration, object);
+
+            console.log(JSON.stringify(result, null, 4));
 
             expect(result).toEqual({
                 id: '123',
@@ -384,8 +387,13 @@ const computeUpdate = (
 ) => {
     let result = { id: object['id'] };
     const fields = getLocalizedFields(configuration);
+    console.log('fields');
+    console.log(JSON.stringify(fields));
     fields.forEach((path: string[]) => {
         const r = computeUpdateRecursively(getText, path, object);
+        console.log(
+            `result for path ${JSON.stringify(path)}=${JSON.stringify(r)}`
+        );
         result = { ...result, ...r };
     });
     return result;
@@ -396,17 +404,40 @@ const computeUpdateRecursively = (
     path: string[],
     object: any
 ) => {
-    if (path.length === 0) {
+    if (R.isEmpty(path)) {
         return undefined;
     }
-    if (path.length === 1) {
-        const fieldName = path[0];
-        const oldValue = object[fieldName];
-        const newValue = getText(oldValue);
-        return { [fieldName]: newValue };
+    if (R.is(Array, object[path[0]])) {
+        console.log(`Working on array ${JSON.stringify(object[path[0]])}`);
+        let result = [];
+        object[path[0]].forEach((element: any) => {
+            const r = computeUpdateRecursively(
+                getText,
+                R.drop(1, path),
+                element
+            );
+            console.log(`Building result at ${JSON.stringify(path[0])} as ${JSON.stringify(r)}`);
+            // const rr = { [path[0]]: r };
+            // console.log(`so that is ... ${JSON.stringify(rr)}`);
+            result = [...result, r];
+        });
+        const rrr = { [path[0]]: result };
+        console.log(`so we get the array result ${JSON.stringify(rrr)}`);
+        return rrr;
     }
+    if (path.length === 1) {
+        const oldValue = object[path[0]];
+        const newValue = getText(oldValue);
+        const id = object['id'];
+        const r22 = { id, [path[0]]: newValue };
+        console.log(`bottom out from ${JSON.stringify(object)} ... returning ${JSON.stringify(r22)}`);
+        return r22;
+    }
+    const rrrr = computeUpdateRecursively(getText, R.drop(1, path), object[path[0]]);
+    console.log(`--------Returning ${JSON.stringify(rrrr)} at id ${object[path[0]]['id']}`);
+    return rrrr;
 };
-
+/*
 const computeUpdateDraft = (
     getText: (v: string) => string,
     configuration: CollectionConfig,
@@ -426,16 +457,30 @@ const computeUpdateRecursivelyDraft = (
     path: string[],
     object: any
 ): any => {
-    if (path.length === 0) {
+    if (R.isEmpty(path)) {
         return undefined;
+    }
+    if (R.is(Array, object[path[0]])) {
+        let result = [];
+        object[path[0]].forEach((element: any) => {
+            const r = computeUpdateRecursively(
+                getText,
+                R.drop(1, path),
+                element
+            );
+            result = [...result, r];
+        });
     }
     if (path.length === 1) {
         const oldValue = object[path[0]];
         const newValue = getText(oldValue);
         return { id: object['id'], [path[0]]: newValue };
     }
-    const p = R.drop(1, path);
-    const o = object[path[0]];
-    const r = computeUpdateRecursivelyDraft(getText, p, o);
+    const r = computeUpdateRecursivelyDraft(
+        getText,
+        R.drop(1, path),
+        object[path[0]]
+    );
     return r; // TODO needs to put path[0] in front of each element?
 };
+*/
