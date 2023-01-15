@@ -76,6 +76,50 @@ const formatPoData = (data: string[]): string =>
         data
     );
 
+const computeUpdate = (
+    getText: (v: string) => string,
+    configuration: CollectionConfig,
+    object: any
+) => {
+    let result = { id: object['id'] };
+    const fields = getLocalizedFields(configuration);
+    fields.forEach((path: string[]) => {
+        result = {
+            ...result,
+            ...computeUpdateRecursively(getText, path, object),
+        };
+    });
+    return result;
+};
+
+const computeUpdateRecursively = (
+    getText: (v: string) => string,
+    path: string[],
+    object: any
+) => {
+    if (R.isEmpty(path)) {
+        return undefined;
+    }
+    if (R.is(Array, object[path[0]])) {
+        let result = [];
+        object[path[0]].forEach((element: any) => {
+            const r = computeUpdateRecursively(
+                getText,
+                R.drop(1, path),
+                element
+            );
+            result = [...result, r];
+        });
+        return { [path[0]]: result };
+    }
+    if (path.length === 1) {
+        const oldValue = object[path[0]];
+        const newValue = getText(oldValue);
+        return { id: object.id, [path[0]]: newValue };
+    }
+    return computeUpdateRecursively(getText, R.drop(1, path), object[path[0]]);
+};
+
 describe('extract POT data', () => {
     describe('find localized fields', () => {
         it('returns nothing for a collection with no localized fields', () => {
@@ -379,47 +423,3 @@ describe('extract POT data', () => {
         });
     });
 });
-
-const computeUpdate = (
-    getText: (v: string) => string,
-    configuration: CollectionConfig,
-    object: any
-) => {
-    let result = { id: object['id'] };
-    const fields = getLocalizedFields(configuration);
-    fields.forEach((path: string[]) => {
-        result = {
-            ...result,
-            ...computeUpdateRecursively(getText, path, object),
-        };
-    });
-    return result;
-};
-
-const computeUpdateRecursively = (
-    getText: (v: string) => string,
-    path: string[],
-    object: any
-) => {
-    if (R.isEmpty(path)) {
-        return undefined;
-    }
-    if (R.is(Array, object[path[0]])) {
-        let result = [];
-        object[path[0]].forEach((element: any) => {
-            const r = computeUpdateRecursively(
-                getText,
-                R.drop(1, path),
-                element
-            );
-            result = [...result, r];
-        });
-        return { [path[0]]: result };
-    }
-    if (path.length === 1) {
-        const oldValue = object[path[0]];
-        const newValue = getText(oldValue);
-        return { id: object.id, [path[0]]: newValue };
-    }
-    return computeUpdateRecursively(getText, R.drop(1, path), object[path[0]]);
-};
