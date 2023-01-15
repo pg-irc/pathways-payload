@@ -1,6 +1,3 @@
-// questions
-// can non-text fields be localized?
-
 import { CollectionConfig, Field, TextField } from 'payload/types';
 import * as R from 'ramda';
 
@@ -407,18 +404,24 @@ describe('extract POT data', () => {
             };
             const object = {
                 id: '123',
-                firstField: [{ id: '234', secondField: 'secondValue' }],
+                firstField: [
+                    { id: '234', secondField: 'secondValue' },
+                    { id: '345', secondField: 'thirdValue' },
+                ],
             };
             // TODO have mock throw on unexpected argument
-            const mockGetText = (value: string): string => 'andreVerdi';
-            console.log('Relevant test start here');
+            const mockGetText = (value: string): string =>
+                value === 'secondValue' ? 'andreVerdi' : 'tredjeVerdi';
             const result = computeUpdate(mockGetText, configuration, object);
 
             console.log(JSON.stringify(result, null, 4));
 
             expect(result).toEqual({
                 id: '123',
-                firstField: [{ id: '234', secondField: 'andreVerdi' }],
+                firstField: [
+                    { id: '234', secondField: 'andreVerdi' },
+                    { id: '345', secondField: 'tredjeVerdi' },
+                ],
             });
         });
     });
