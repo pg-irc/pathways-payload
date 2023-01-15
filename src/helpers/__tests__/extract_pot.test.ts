@@ -36,10 +36,18 @@ const getLocalizedFieldsRecursively = (
     return R.reduce(reduceNestedField, results, nestedFields);
 };
 
-const getLocalizedValues = (paths: string[][], object: any): string[] => {
+interface LocalizedValue {
+    value: string;
+    breadCrumbs: string[];
+}
+
+const getLocalizedValues = (
+    paths: string[][],
+    object: any
+): LocalizedValue[] => {
     let result = [];
     paths.forEach((path: string[]) => {
-        const r = getLocalizedValuesRecursively(path, object);
+        const r = getLocalizedValuesRecursively(path, [], object);
         result = R.flatten(R.append(r, result));
     });
     return result;
@@ -47,23 +55,37 @@ const getLocalizedValues = (paths: string[][], object: any): string[] => {
 
 const getLocalizedValuesRecursively = (
     path: string[],
+    breadCrumbs: string[],
     object: any
-): string[] => {
+): LocalizedValue[] => {
     if (R.isEmpty(path)) {
         return [];
     }
     if (R.is(Array, object[path[0]])) {
         let result = [];
+        let index = 0;
         object[path[0]].forEach((element: any) => {
-            const r = getLocalizedValuesRecursively(R.drop(1, path), element);
+            const b = [...breadCrumbs, path[0], String(index)];
+            const r = getLocalizedValuesRecursively(
+                R.drop(1, path),
+                b,
+                element
+            );
+            index += 1;
             result = [...result, r];
         });
         return result;
     }
     if (path.length === 1) {
-        return R.is(String, object[path[0]]) ? object[path[0]] : undefined;
+        const v = R.is(String, object[path[0]]) ? object[path[0]] : undefined;
+        if (!v) {
+            return undefined;
+        }
+        const b = [...breadCrumbs, path[0]];
+        return [{ value: v, breadCrumbs: b }];
     }
-    return getLocalizedValuesRecursively(R.drop(1, path), object[path[0]]);
+    const b = [...breadCrumbs, path[0]];
+    return getLocalizedValuesRecursively(R.drop(1, path), b, object[path[0]]);
 };
 
 const formatPoData = (data: string[]): string =>
@@ -255,7 +277,9 @@ describe('extract POT data', () => {
                 firstField: 'first Value',
             };
             const result = getLocalizedValues([['firstField']], object);
-            expect(result).toEqual(['first Value']);
+            expect(result).toEqual([
+                { value: 'first Value', breadCrumbs: ['firstField'] },
+            ]);
         });
         it('handles empty path array', () => {
             const object = {
@@ -274,7 +298,12 @@ describe('extract POT data', () => {
                 [['firstField', 'secondField']],
                 object
             );
-            expect(result).toEqual(['first Value']);
+            expect(result).toEqual([
+                {
+                    value: 'first Value',
+                    breadCrumbs: ['firstField', 'secondField'],
+                },
+            ]);
         });
         it('pulls multiple values from simple object', () => {
             const object = {
@@ -285,7 +314,10 @@ describe('extract POT data', () => {
                 [['firstField'], ['secondField']],
                 object
             );
-            expect(result).toEqual(['first Value', 'second Value']);
+            expect(result).toEqual([
+                { value: 'first Value', breadCrumbs: ['firstField'] },
+                { value: 'second Value', breadCrumbs: ['secondField'] },
+            ]);
         });
         it('pulls values from an array', () => {
             const object = {
@@ -304,7 +336,16 @@ describe('extract POT data', () => {
                 [['firstField', 'thirdField']],
                 object
             );
-            expect(result).toEqual(['first Value', 'second Value']);
+            expect(result).toEqual([
+                {
+                    value: 'first Value',
+                    breadCrumbs: ['firstField', '0', 'thirdField'],
+                },
+                {
+                    value: 'second Value',
+                    breadCrumbs: ['firstField', '1', 'thirdField'],
+                },
+            ]);
         });
         it('handles error where the path array is too short', () => {
             const object = {
