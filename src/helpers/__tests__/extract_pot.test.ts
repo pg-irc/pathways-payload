@@ -387,14 +387,11 @@ const computeUpdate = (
 ) => {
     let result = { id: object['id'] };
     const fields = getLocalizedFields(configuration);
-    console.log('fields');
-    console.log(JSON.stringify(fields));
     fields.forEach((path: string[]) => {
-        const r = computeUpdateRecursively(getText, path, object);
-        console.log(
-            `result for path ${JSON.stringify(path)}=${JSON.stringify(r)}`
-        );
-        result = { ...result, ...r };
+        result = {
+            ...result,
+            ...computeUpdateRecursively(getText, path, object),
+        };
     });
     return result;
 };
@@ -408,59 +405,6 @@ const computeUpdateRecursively = (
         return undefined;
     }
     if (R.is(Array, object[path[0]])) {
-        console.log(`Working on array ${JSON.stringify(object[path[0]])}`);
-        let result = [];
-        object[path[0]].forEach((element: any) => {
-            const r = computeUpdateRecursively(
-                getText,
-                R.drop(1, path),
-                element
-            );
-            console.log(`Building result at ${JSON.stringify(path[0])} as ${JSON.stringify(r)}`);
-            // const rr = { [path[0]]: r };
-            // console.log(`so that is ... ${JSON.stringify(rr)}`);
-            result = [...result, r];
-        });
-        const rrr = { [path[0]]: result };
-        console.log(`so we get the array result ${JSON.stringify(rrr)}`);
-        return rrr;
-    }
-    if (path.length === 1) {
-        const oldValue = object[path[0]];
-        const newValue = getText(oldValue);
-        const id = object['id'];
-        const r22 = { id, [path[0]]: newValue };
-        console.log(`bottom out from ${JSON.stringify(object)} ... returning ${JSON.stringify(r22)}`);
-        return r22;
-    }
-    const rrrr = computeUpdateRecursively(getText, R.drop(1, path), object[path[0]]);
-    console.log(`--------Returning ${JSON.stringify(rrrr)} at id ${object[path[0]]['id']}`);
-    return rrrr;
-};
-/*
-const computeUpdateDraft = (
-    getText: (v: string) => string,
-    configuration: CollectionConfig,
-    object: any
-) => {
-    const fields = getLocalizedFields(configuration);
-    let result = {};
-    fields.forEach((path: string[]) => {
-        const r = computeUpdateRecursivelyDraft(getText, path, object);
-        result = { ...result, r };
-    });
-    return result;
-};
-
-const computeUpdateRecursivelyDraft = (
-    getText: (v: string) => string,
-    path: string[],
-    object: any
-): any => {
-    if (R.isEmpty(path)) {
-        return undefined;
-    }
-    if (R.is(Array, object[path[0]])) {
         let result = [];
         object[path[0]].forEach((element: any) => {
             const r = computeUpdateRecursively(
@@ -470,17 +414,12 @@ const computeUpdateRecursivelyDraft = (
             );
             result = [...result, r];
         });
+        return { [path[0]]: result };
     }
     if (path.length === 1) {
         const oldValue = object[path[0]];
         const newValue = getText(oldValue);
-        return { id: object['id'], [path[0]]: newValue };
+        return { id: object.id, [path[0]]: newValue };
     }
-    const r = computeUpdateRecursivelyDraft(
-        getText,
-        R.drop(1, path),
-        object[path[0]]
-    );
-    return r; // TODO needs to put path[0] in front of each element?
+    return computeUpdateRecursively(getText, R.drop(1, path), object[path[0]]);
 };
-*/
