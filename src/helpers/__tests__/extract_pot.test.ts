@@ -252,14 +252,14 @@ describe('extract POT data', () => {
     describe('pull localized values from objects', () => {
         it('pulls a value from simple object', () => {
             const object = {
-                firstField: 'firstValue',
+                firstField: 'first Value',
             };
             const result = getLocalizedValues([['firstField']], object);
-            expect(result).toEqual(['firstValue']);
+            expect(result).toEqual(['first Value']);
         });
         it('handles empty path array', () => {
             const object = {
-                firstField: 'firstValue',
+                firstField: 'first Value',
             };
             expect(getLocalizedValues([], object)).toEqual([]);
             expect(getLocalizedValues([[]], object)).toEqual([]);
@@ -267,36 +267,36 @@ describe('extract POT data', () => {
         it('pulls value from a nested field', () => {
             const object = {
                 firstField: {
-                    secondField: 'firstValue',
+                    secondField: 'first Value',
                 },
             };
             const result = getLocalizedValues(
                 [['firstField', 'secondField']],
                 object
             );
-            expect(result).toEqual(['firstValue']);
+            expect(result).toEqual(['first Value']);
         });
         it('pulls multiple values from simple object', () => {
             const object = {
-                firstField: 'firstValue',
-                secondField: 'secondValue',
+                firstField: 'first Value',
+                secondField: 'second Value',
             };
             const result = getLocalizedValues(
                 [['firstField'], ['secondField']],
                 object
             );
-            expect(result).toEqual(['firstValue', 'secondValue']);
+            expect(result).toEqual(['first Value', 'second Value']);
         });
         it('pulls values from an array', () => {
             const object = {
                 firstField: [
                     {
                         secondField: 3,
-                        thirdField: 'firstValue',
+                        thirdField: 'first Value',
                     },
                     {
                         secondField: 4,
-                        thirdField: 'secondValue',
+                        thirdField: 'second Value',
                     },
                 ],
             };
@@ -304,12 +304,12 @@ describe('extract POT data', () => {
                 [['firstField', 'thirdField']],
                 object
             );
-            expect(result).toEqual(['firstValue', 'secondValue']);
+            expect(result).toEqual(['first Value', 'second Value']);
         });
         it('handles error where the path array is too short', () => {
             const object = {
                 firstField: {
-                    secondField: 'firstValue',
+                    secondField: 'first Value',
                 },
             };
             const result = getLocalizedValues([['firstField']], object);
@@ -318,7 +318,7 @@ describe('extract POT data', () => {
         it('handles error where the path array is too long', () => {
             const object = {
                 firstField: {
-                    secondField: 'firstValue',
+                    secondField: 'first Value',
                 },
             };
             const result = getLocalizedValues(
@@ -351,12 +351,12 @@ describe('extract POT data', () => {
                     { name: 'firstField', type: 'text', localized: true },
                 ],
             };
-            const object = { id: '123', firstField: 'firstValue' };
-            const mockGetText = (value: string): string => 'premierValeur';
+            const object = { id: '123', firstField: 'first Value' };
 
-            const result = computeUpdate(mockGetText, configuration, object);
+            const getText = mockGetText({ 'first Value': 'foerste Verdi' });
+            const result = computeUpdate(getText, configuration, object);
 
-            expect(result).toEqual({ id: '123', firstField: 'premierValeur' });
+            expect(result).toEqual({ id: '123', firstField: 'foerste Verdi' });
         });
         it('handles object with two localized fields', () => {
             const configuration: CollectionConfig = {
@@ -369,18 +369,19 @@ describe('extract POT data', () => {
             };
             const object = {
                 id: '123',
-                firstField: 'firstValue',
-                secondField: 'secondValue',
+                firstField: 'first Value',
+                secondField: 'second Value',
             };
-            const mockGetText = (value: string): string =>
-                value === 'firstValue' ? 'foersteVerdi' : 'andreVerdi';
-
-            const result = computeUpdate(mockGetText, configuration, object);
+            const getText = mockGetText({
+                'first Value': 'foerste Verdi',
+                'second Value': 'andre Verdi',
+            });
+            const result = computeUpdate(getText, configuration, object);
 
             expect(result).toEqual({
                 id: '123',
-                firstField: 'foersteVerdi',
-                secondField: 'andreVerdi',
+                firstField: 'foerste Verdi',
+                secondField: 'andre Verdi',
             });
         });
         it('handles object with nested fields', () => {
@@ -405,24 +406,37 @@ describe('extract POT data', () => {
             const object = {
                 id: '123',
                 firstField: [
-                    { id: '234', secondField: 'secondValue' },
-                    { id: '345', secondField: 'thirdValue' },
+                    { id: '234', secondField: 'second Value' },
+                    { id: '345', secondField: 'third Value' },
                 ],
             };
-            // TODO have mock throw on unexpected argument
-            const mockGetText = (value: string): string =>
-                value === 'secondValue' ? 'andreVerdi' : 'tredjeVerdi';
-            const result = computeUpdate(mockGetText, configuration, object);
+            const getText = mockGetText({
+                'second Value': 'andre Verdi',
+                'third Value': 'tredje Verdi',
+            });
+            const result = computeUpdate(getText, configuration, object);
 
             console.log(JSON.stringify(result, null, 4));
 
             expect(result).toEqual({
                 id: '123',
                 firstField: [
-                    { id: '234', secondField: 'andreVerdi' },
-                    { id: '345', secondField: 'tredjeVerdi' },
+                    { id: '234', secondField: 'andre Verdi' },
+                    { id: '345', secondField: 'tredje Verdi' },
                 ],
             });
         });
     });
 });
+
+type GetTextFunction = (value: string) => string;
+
+const mockGetText = (map: Record<string, string>): GetTextFunction => {
+    return (value: string) => {
+        const mappedValue = map[value];
+        if (!mappedValue) {
+            throw new Error(`Invalid value passed to mock getText: ${value}`);
+        }
+        return mappedValue;
+    };
+};
