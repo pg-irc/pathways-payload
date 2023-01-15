@@ -249,7 +249,7 @@ describe('extract POT data', () => {
             });
         });
     });
-    describe('pull localized values from objects', () => {
+    describe('pull localizable values from objects', () => {
         it('pulls a value from simple object', () => {
             const object = {
                 firstField: 'first Value',
@@ -331,13 +331,15 @@ describe('extract POT data', () => {
     describe('write localized values to POT file', () => {
         it('formats a couple of values', () => {
             const data = ['first value', 'second value'];
-            const expectedData =
-                'msgid "first value"\n' +
-                'msgstr ""\n' +
-                '\n' +
-                'msgid "second value"\n' +
-                'msgstr ""\n' +
-                '\n';
+            const expectedData = [
+                'msgid "first value"',
+                'msgstr ""',
+                '',
+                'msgid "second value"',
+                'msgstr ""',
+                '',
+                '',
+            ].join('\n');
             const formattedData = formatPoData(data);
             expect(formattedData).toEqual(expectedData);
         });
