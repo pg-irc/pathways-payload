@@ -6,12 +6,13 @@ export interface LocalizedValue {
 }
 
 export const getLocalizedValues = (
+    slug: string,
     paths: string[][],
     object: any
 ): LocalizedValue[] => {
     let result = [];
     paths.forEach((path: string[]) => {
-        const r = getLocalizedValuesRecursively(path, [], object);
+        const r = getLocalizedValuesRecursively(path, slug, object);
         result = R.flatten(R.append(r, result));
     });
     return result;
@@ -54,7 +55,10 @@ const appendToBreadCrumbs = (
     item: string | number,
     secondItem?: string | number
 ): string => {
-    const result = breadcrumbs + '/' + item;
+    const isString = R.is(String, item);
+    const result = isString
+        ? breadcrumbs + '.' + item
+        : breadcrumbs + '[' + String(item) + ']';
     if (secondItem === undefined) {
         return result;
     }

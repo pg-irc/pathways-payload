@@ -141,17 +141,17 @@ describe('extract POT data', () => {
             const object = {
                 firstField: 'first Value',
             };
-            const result = getLocalizedValues([['firstField']], object);
+            const result = getLocalizedValues('slug', [['firstField']], object);
             expect(result).toEqual([
-                { value: 'first Value', breadCrumbs: '/firstField' },
+                { value: 'first Value', breadCrumbs: 'slug.firstField' },
             ]);
         });
         it('handles empty path array', () => {
             const object = {
                 firstField: 'first Value',
             };
-            expect(getLocalizedValues([], object)).toEqual([]);
-            expect(getLocalizedValues([[]], object)).toEqual([]);
+            expect(getLocalizedValues('slug', [], object)).toEqual([]);
+            expect(getLocalizedValues('slug', [[]], object)).toEqual([]);
         });
         it('pulls value from a nested field', () => {
             const object = {
@@ -160,13 +160,14 @@ describe('extract POT data', () => {
                 },
             };
             const result = getLocalizedValues(
+                'slug',
                 [['firstField', 'secondField']],
                 object
             );
             expect(result).toEqual([
                 {
                     value: 'first Value',
-                    breadCrumbs: '/firstField/secondField',
+                    breadCrumbs: 'slug.firstField.secondField',
                 },
             ]);
         });
@@ -176,12 +177,13 @@ describe('extract POT data', () => {
                 secondField: 'second Value',
             };
             const result = getLocalizedValues(
+                'slug',
                 [['firstField'], ['secondField']],
                 object
             );
             expect(result).toEqual([
-                { value: 'first Value', breadCrumbs: '/firstField' },
-                { value: 'second Value', breadCrumbs: '/secondField' },
+                { value: 'first Value', breadCrumbs: 'slug.firstField' },
+                { value: 'second Value', breadCrumbs: 'slug.secondField' },
             ]);
         });
         it('pulls values from an array', () => {
@@ -198,17 +200,18 @@ describe('extract POT data', () => {
                 ],
             };
             const result = getLocalizedValues(
+                'slug',
                 [['firstField', 'thirdField']],
                 object
             );
             expect(result).toEqual([
                 {
                     value: 'first Value',
-                    breadCrumbs: '/firstField/0/thirdField',
+                    breadCrumbs: 'slug.firstField[0].thirdField',
                 },
                 {
                     value: 'second Value',
-                    breadCrumbs: '/firstField/1/thirdField',
+                    breadCrumbs: 'slug.firstField[1].thirdField',
                 },
             ]);
         });
@@ -218,7 +221,7 @@ describe('extract POT data', () => {
                     secondField: 'first Value',
                 },
             };
-            const result = getLocalizedValues([['firstField']], object);
+            const result = getLocalizedValues('slug', [['firstField']], object);
             expect(result).toEqual([undefined]);
         });
         it('handles error where the path array is too long', () => {
@@ -228,6 +231,7 @@ describe('extract POT data', () => {
                 },
             };
             const result = getLocalizedValues(
+                'slug',
                 [['firstField', 'secondField', 'thirdField']],
                 object
             );
