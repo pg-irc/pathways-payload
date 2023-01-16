@@ -1,143 +1,8 @@
-import { CollectionConfig, Field, TextField } from 'payload/types';
-import * as R from 'ramda';
-
-const getLocalizedFields = (configuration: CollectionConfig) =>
-    getLocalizedFieldsRecursively([], configuration.fields);
-
-const isLocalizedText = (field: Field): boolean =>
-    field.type === 'text' && field.localized;
-
-const isNested = (field: Field): boolean => R.has('fields', field);
-
-interface NestedField {
-    name: string;
-    fields: Field[];
-}
-
-const getLocalizedFieldsRecursively = (
-    path: string[],
-    fields: Field[]
-): string[][] => {
-    const reduceLocalizedField = (acc: string[][], textField: TextField) => [
-        ...acc,
-        [...path, textField.name],
-    ];
-
-    const localizedFields = R.filter(isLocalizedText, fields);
-    const results = R.reduce(reduceLocalizedField, [], localizedFields);
-
-    const reduceNestedField = (acc: string[][], nestedField: NestedField) => {
-        const p = [...path, nestedField.name];
-        const f = nestedField.fields;
-        return [...acc, ...getLocalizedFieldsRecursively(p, f)];
-    };
-
-    const nestedFields: NestedField[] = R.filter(isNested, fields);
-    return R.reduce(reduceNestedField, results, nestedFields);
-};
-
-interface LocalizedValue {
-    value: string;
-    breadCrumbs: string[];
-}
-
-const getLocalizedValues = (
-    paths: string[][],
-    object: any
-): LocalizedValue[] => {
-    let result = [];
-    paths.forEach((path: string[]) => {
-        const r = getLocalizedValuesRecursively(path, [], object);
-        result = R.flatten(R.append(r, result));
-    });
-    return result;
-};
-
-const getLocalizedValuesRecursively = (
-    path: string[],
-    breadCrumbs: string[],
-    object: any
-): LocalizedValue[] => {
-    if (R.isEmpty(path)) {
-        return [];
-    }
-    if (R.is(Array, object[path[0]])) {
-        let result = [];
-        let index = 0;
-        object[path[0]].forEach((element: any) => {
-            const b = [...breadCrumbs, path[0], String(index)];
-            const r = getLocalizedValuesRecursively(
-                R.drop(1, path),
-                b,
-                element
-            );
-            index += 1;
-            result = [...result, r];
-        });
-        return result;
-    }
-    if (path.length === 1) {
-        const v = R.is(String, object[path[0]]) ? object[path[0]] : undefined;
-        if (!v) {
-            return undefined;
-        }
-        const b = [...breadCrumbs, path[0]];
-        return [{ value: v, breadCrumbs: b }];
-    }
-    const b = [...breadCrumbs, path[0]];
-    return getLocalizedValuesRecursively(R.drop(1, path), b, object[path[0]]);
-};
-
-const formatPoData = (data: string[]): string =>
-    R.reduce(
-        (acc: string, item: string) => `${acc}msgid "${item}"\nmsgstr ""\n\n`,
-        '',
-        data
-    );
-
-const computeUpdate = (
-    getText: (v: string) => string,
-    configuration: CollectionConfig,
-    object: any
-) => {
-    let result = { id: object['id'] };
-    const fields = getLocalizedFields(configuration);
-    fields.forEach((path: string[]) => {
-        result = {
-            ...result,
-            ...computeUpdateRecursively(getText, path, object),
-        };
-    });
-    return result;
-};
-
-const computeUpdateRecursively = (
-    getText: (v: string) => string,
-    path: string[],
-    object: any
-) => {
-    if (R.isEmpty(path)) {
-        return undefined;
-    }
-    if (R.is(Array, object[path[0]])) {
-        let result = [];
-        object[path[0]].forEach((element: any) => {
-            const r = computeUpdateRecursively(
-                getText,
-                R.drop(1, path),
-                element
-            );
-            result = [...result, r];
-        });
-        return { [path[0]]: result };
-    }
-    if (path.length === 1) {
-        const oldValue = object[path[0]];
-        const newValue = getText(oldValue);
-        return { id: object.id, [path[0]]: newValue };
-    }
-    return computeUpdateRecursively(getText, R.drop(1, path), object[path[0]]);
-};
+import { CollectionConfig } from 'payload/types';
+import { getLocalizedFields } from '../get_localized_fields';
+import { getLocalizedValues } from '../get_localized_values';
+import { updateLocalizedValues } from '../update_localized_values';
+import { formatPoData } from '../format_po_data';
 
 describe('extract POT data', () => {
     describe('find localized fields', () => {
@@ -397,7 +262,7 @@ describe('extract POT data', () => {
             const object = { id: '123', firstField: 'first Value' };
 
             const getText = mockGetText({ 'first Value': 'foerste Verdi' });
-            const result = computeUpdate(getText, configuration, object);
+            const result = updateLocalizedValues(getText, configuration, object);
 
             expect(result).toEqual({ id: '123', firstField: 'foerste Verdi' });
         });
@@ -419,7 +284,7 @@ describe('extract POT data', () => {
                 'first Value': 'foerste Verdi',
                 'second Value': 'andre Verdi',
             });
-            const result = computeUpdate(getText, configuration, object);
+            const result = updateLocalizedValues(getText, configuration, object);
 
             expect(result).toEqual({
                 id: '123',
@@ -457,7 +322,7 @@ describe('extract POT data', () => {
                 'second Value': 'andre Verdi',
                 'third Value': 'tredje Verdi',
             });
-            const result = computeUpdate(getText, configuration, object);
+            const result = updateLocalizedValues(getText, configuration, object);
 
             console.log(JSON.stringify(result, null, 4));
 
