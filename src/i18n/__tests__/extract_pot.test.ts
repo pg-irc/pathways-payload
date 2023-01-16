@@ -254,7 +254,7 @@ describe('extract POT data', () => {
             const formattedData = formatPoData(data);
             expect(formattedData).toEqual(expectedData);
         });
-        it ('sorts by messsage id', () => {
+        it('sorts by messsage id', () => {
             const data = [
                 { value: 'pppp', breadCrumbs: 'first/path' },
                 { value: 'aaaa', breadCrumbs: 'second/path' },
@@ -288,24 +288,27 @@ describe('extract POT data', () => {
             const formattedData = formatPoData(data);
             expect(formattedData).toEqual(expectedData);
         });
-        it ('includes breadcrumbs in output', () => {
+        it('removes duplicate msg ids but includes breadcrumbs for each', () => {
             const data = [
-                {
-                    value: 'first value',
-                    breadCrumbs: 'path/to/first/value',
-                },
-                {
-                    value: 'second value',
-                    breadCrumbs: 'path/to/second/value',
-                },
+                { value: 'aaaa', breadCrumbs: 'first/path' },
+                { value: 'aaaa', breadCrumbs: 'second/path' },
+                { value: 'bbbb', breadCrumbs: 'third/path' },
+                { value: 'bbbb', breadCrumbs: 'fourth/path' },
+                { value: 'xxxx', breadCrumbs: 'fifth/path' },
             ];
             const expectedData = [
-                '#: path/to/first/value',
-                'msgid "first value"',
+                '#: first/path',
+                '#: second/path',
+                'msgid "aaaa"',
                 'msgstr ""',
                 '',
-                '#: path/to/second/value',
-                'msgid "second value"',
+                '#: fourth/path',
+                '#: third/path',
+                'msgid "bbbb"',
+                'msgstr ""',
+                '',
+                '#: fifth/path',
+                'msgid "xxxx"',
                 'msgstr ""',
                 '',
                 '',
@@ -326,7 +329,11 @@ describe('extract POT data', () => {
             const object = { id: '123', firstField: 'first Value' };
 
             const getText = mockGetText({ 'first Value': 'foerste Verdi' });
-            const result = updateLocalizedValues(getText, configuration, object);
+            const result = updateLocalizedValues(
+                getText,
+                configuration,
+                object
+            );
 
             expect(result).toEqual({ id: '123', firstField: 'foerste Verdi' });
         });
@@ -348,7 +355,11 @@ describe('extract POT data', () => {
                 'first Value': 'foerste Verdi',
                 'second Value': 'andre Verdi',
             });
-            const result = updateLocalizedValues(getText, configuration, object);
+            const result = updateLocalizedValues(
+                getText,
+                configuration,
+                object
+            );
 
             expect(result).toEqual({
                 id: '123',
@@ -386,9 +397,11 @@ describe('extract POT data', () => {
                 'second Value': 'andre Verdi',
                 'third Value': 'tredje Verdi',
             });
-            const result = updateLocalizedValues(getText, configuration, object);
-
-            console.log(JSON.stringify(result, null, 4));
+            const result = updateLocalizedValues(
+                getText,
+                configuration,
+                object
+            );
 
             expect(result).toEqual({
                 id: '123',
