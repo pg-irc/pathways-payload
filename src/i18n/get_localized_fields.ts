@@ -4,7 +4,7 @@ import * as R from 'ramda';
 export const getLocalizedFields = (configuration: CollectionConfig) =>
     getLocalizedFieldsRecursively([], configuration.fields);
 
-const isLocalizedText = (field: Field): boolean =>
+const isLocalized = (field: Field): boolean =>
     field.type === 'text' && field.localized;
 
 const isNested = (field: Field): boolean => R.has('fields', field);
@@ -18,21 +18,26 @@ const getLocalizedFieldsRecursively = (
     path: string[],
     fields: Field[]
 ): string[][] => {
-    const reduceLocalizedField = (acc: string[][], textField: TextField) => [
-        ...acc,
-        [...path, textField.name],
+    const buildPathToLocalizedField = (accumulator: string[][], field: TextField) => [
+        ...accumulator,
+        [...path, field.name],
     ];
 
-    const localizedFields = R.filter(isLocalizedText, fields);
-    const results = R.reduce(reduceLocalizedField, [], localizedFields);
+    const results = R.reduce(
+        buildPathToLocalizedField,
+        [],
+        R.filter(isLocalized, fields)
+    );
 
-    const reduceNestedField = (acc: string[][], nestedField: NestedField) => {
-        const p = [...path, nestedField.name];
-        const f = nestedField.fields;
-        return [...acc, ...getLocalizedFieldsRecursively(p, f)];
+    const buildPathToNestedFields = (accumulator: string[][], field: NestedField) => {
+        const p = [...path, field.name];
+        const f = field.fields;
+        return [...accumulator, ...getLocalizedFieldsRecursively(p, f)];
     };
 
-    const nestedFields: NestedField[] = R.filter(isNested, fields);
-    return R.reduce(reduceNestedField, results, nestedFields);
+    return R.reduce(
+        buildPathToNestedFields,
+        results,
+        R.filter(isNested, fields)
+    );
 };
-
