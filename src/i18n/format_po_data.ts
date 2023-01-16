@@ -6,19 +6,21 @@ export const formatPoData = (data: LocalizedValue[]): string => {
         R.ascend(R.prop('value')),
         R.ascend(R.prop('breadCrumbs')),
     ]);
-    const sortedData = sort(data);
 
-    let result = '';
-    for (let i = 0; i < sortedData.length; i += 1) {
-        const isDuplicate =
-            i + 1 < sortedData.length &&
-            sortedData[i].value === sortedData[i + 1].value;
-        const item = sortedData[i];
-        if (isDuplicate) {
-            result += `#: ${item.breadCrumbs}\n`;
-        } else {
-            result += `#: ${item.breadCrumbs}\nmsgid "${item.value}"\nmsgstr ""\n\n`;
-        }
-    }
-    return result;
+    const empty = { value: '', breadCrumbs: '' };
+    const sortedPairs = R.aperture(2, R.append(empty, sort(data)));
+
+    return R.reduce(
+        (acc: string, pair: LocalizedValue[]) => {
+            // empty value was appended above so the last element will not be forgotten here
+            const item = pair[0];
+            const isDuplicate = pair[0].value === pair[1].value;
+            if (isDuplicate) {
+                return `${acc}#: ${item.breadCrumbs}\n`;
+            }
+            return `${acc}#: ${item.breadCrumbs}\nmsgid "${item.value}"\nmsgstr ""\n\n`;
+        },
+        '',
+        sortedPairs
+    );
 };
