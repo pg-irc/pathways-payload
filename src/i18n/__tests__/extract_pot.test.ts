@@ -236,11 +236,75 @@ describe('extract POT data', () => {
     });
     describe('write localized values to POT file', () => {
         it('formats a couple of values', () => {
-            const data = ['first value', 'second value'];
+            const data = [
+                { value: 'first value', breadCrumbs: 'first/path' },
+                { value: 'second value', breadCrumbs: 'second/path' },
+            ];
             const expectedData = [
+                '#: first/path',
                 'msgid "first value"',
                 'msgstr ""',
                 '',
+                '#: second/path',
+                'msgid "second value"',
+                'msgstr ""',
+                '',
+                '',
+            ].join('\n');
+            const formattedData = formatPoData(data);
+            expect(formattedData).toEqual(expectedData);
+        });
+        it ('sorts by messsage id', () => {
+            const data = [
+                { value: 'pppp', breadCrumbs: 'first/path' },
+                { value: 'aaaa', breadCrumbs: 'second/path' },
+                { value: 'ffff', breadCrumbs: 'third/path' },
+                { value: 'bbbb', breadCrumbs: 'fourth/path' },
+                { value: 'xxxx', breadCrumbs: 'fifth/path' },
+            ];
+            const expectedData = [
+                '#: second/path',
+                'msgid "aaaa"',
+                'msgstr ""',
+                '',
+                '#: fourth/path',
+                'msgid "bbbb"',
+                'msgstr ""',
+                '',
+                '#: third/path',
+                'msgid "ffff"',
+                'msgstr ""',
+                '',
+                '#: first/path',
+                'msgid "pppp"',
+                'msgstr ""',
+                '',
+                '#: fifth/path',
+                'msgid "xxxx"',
+                'msgstr ""',
+                '',
+                '',
+            ].join('\n');
+            const formattedData = formatPoData(data);
+            expect(formattedData).toEqual(expectedData);
+        });
+        it ('includes breadcrumbs in output', () => {
+            const data = [
+                {
+                    value: 'first value',
+                    breadCrumbs: 'path/to/first/value',
+                },
+                {
+                    value: 'second value',
+                    breadCrumbs: 'path/to/second/value',
+                },
+            ];
+            const expectedData = [
+                '#: path/to/first/value',
+                'msgid "first value"',
+                'msgstr ""',
+                '',
+                '#: path/to/second/value',
                 'msgid "second value"',
                 'msgstr ""',
                 '',
