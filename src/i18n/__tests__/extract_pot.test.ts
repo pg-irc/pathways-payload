@@ -143,7 +143,7 @@ describe('extract POT data', () => {
             };
             const result = getLocalizedValues([['firstField']], object);
             expect(result).toEqual([
-                { value: 'first Value', breadCrumbs: ['firstField'] },
+                { value: 'first Value', breadCrumbs: '/firstField' },
             ]);
         });
         it('handles empty path array', () => {
@@ -166,7 +166,7 @@ describe('extract POT data', () => {
             expect(result).toEqual([
                 {
                     value: 'first Value',
-                    breadCrumbs: ['firstField', 'secondField'],
+                    breadCrumbs: '/firstField/secondField',
                 },
             ]);
         });
@@ -180,8 +180,8 @@ describe('extract POT data', () => {
                 object
             );
             expect(result).toEqual([
-                { value: 'first Value', breadCrumbs: ['firstField'] },
-                { value: 'second Value', breadCrumbs: ['secondField'] },
+                { value: 'first Value', breadCrumbs: '/firstField' },
+                { value: 'second Value', breadCrumbs: '/secondField' },
             ]);
         });
         it('pulls values from an array', () => {
@@ -204,11 +204,11 @@ describe('extract POT data', () => {
             expect(result).toEqual([
                 {
                     value: 'first Value',
-                    breadCrumbs: ['firstField', '0', 'thirdField'],
+                    breadCrumbs: '/firstField/0/thirdField',
                 },
                 {
                     value: 'second Value',
-                    breadCrumbs: ['firstField', '1', 'thirdField'],
+                    breadCrumbs: '/firstField/1/thirdField',
                 },
             ]);
         });

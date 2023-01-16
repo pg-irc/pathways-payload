@@ -2,7 +2,7 @@ import * as R from 'ramda';
 
 export interface LocalizedValue {
     value: string;
-    breadCrumbs: string[];
+    breadCrumbs: string;
 }
 
 export const getLocalizedValues = (
@@ -19,7 +19,7 @@ export const getLocalizedValues = (
 
 const getLocalizedValuesRecursively = (
     path: string[],
-    breadCrumbs: string[],
+    breadCrumbs: string,
     object: any
 ): LocalizedValue[] => {
     if (R.isEmpty(path)) {
@@ -29,12 +29,9 @@ const getLocalizedValuesRecursively = (
         let result = [];
         let index = 0;
         object[path[0]].forEach((element: any) => {
-            const b = [...breadCrumbs, path[0], String(index)];
-            const r = getLocalizedValuesRecursively(
-                R.drop(1, path),
-                b,
-                element
-            );
+            const p = R.drop(1, path);
+            const b = appendToBreadCrumbs(breadCrumbs, path[0], index);
+            const r = getLocalizedValuesRecursively(p, b, element);
             index += 1;
             result = [...result, r];
         });
@@ -45,10 +42,21 @@ const getLocalizedValuesRecursively = (
         if (!v) {
             return undefined;
         }
-        const b = [...breadCrumbs, path[0]];
+        const b = appendToBreadCrumbs(breadCrumbs, path[0]);
         return [{ value: v, breadCrumbs: b }];
     }
-    const b = [...breadCrumbs, path[0]];
+    const b = appendToBreadCrumbs(breadCrumbs, path[0]);
     return getLocalizedValuesRecursively(R.drop(1, path), b, object[path[0]]);
 };
 
+const appendToBreadCrumbs = (
+    breadcrumbs: string,
+    item: string | number,
+    secondItem?: string | number
+): string => {
+    const result = breadcrumbs + '/' + item;
+    if (secondItem === undefined) {
+        return result;
+    }
+    return appendToBreadCrumbs(result, secondItem);
+};
